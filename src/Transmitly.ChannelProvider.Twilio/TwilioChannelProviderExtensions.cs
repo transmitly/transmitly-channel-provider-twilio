@@ -34,19 +34,11 @@ namespace Transmitly.ChannelProvider.Twilio
 			var opts = new TwilioClientOptions();
 			options(opts);
 
-			InitClient(opts);
-			
+			TwilioClient.Init(opts.AccountSid, opts.AuthToken);
+
 			channelProviderConfiguration.AddChannelProvider(Id.ChannelProvider.Twilio(providerId), new TwilioSmsChannelProviderClient(), Id.Channel.Sms());
 
 			return channelProviderConfiguration;
-		}
-
-		private static void InitClient(TwilioClientOptions opts)
-		{
-			if (string.IsNullOrWhiteSpace(opts.AccountSid))
-				TwilioClient.Init(opts.Username, opts.Password);
-			else
-				TwilioClient.Init(opts.Username, opts.Password, opts.AccountSid);
 		}
 	}
 }

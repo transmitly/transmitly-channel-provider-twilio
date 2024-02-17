@@ -14,13 +14,9 @@
 
 namespace Transmitly.ChannelProvider.Twilio
 {
-	sealed class TwilioDispatchResult : IDispatchResult
+	sealed class TwilioDispatchResult(string sid) : IDispatchResult
 	{
-		public TwilioDispatchResult(string sid)
-		{
-			ResourceId = sid;
-		}
-		public string? ResourceId { get; }
+		public string? ResourceId { get; } = sid;
 
 		public DispatchStatus DispatchStatus => DispatchStatus.Dispatched;
 
