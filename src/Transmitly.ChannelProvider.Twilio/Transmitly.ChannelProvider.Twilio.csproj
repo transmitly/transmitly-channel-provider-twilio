@@ -1,0 +1,29 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+	  <TargetFrameworks Condition=" '$(OS)' == 'Windows_NT'">net48;net471</TargetFrameworks>
+	  <TargetFrameworks>$(TargetFrameworks);netstandard2.0;net6.0</TargetFrameworks>
+	  <Nullable>enable</Nullable>
+	  <LangVersion>latest</LangVersion>
+	  <IsPackable>true</IsPackable>
+	  <AssemblyVersion>0.0.1</AssemblyVersion>
+	  <AssemblyFileVersion>0.0.1</AssemblyFileVersion>
+	  <PackageId>Transmitly.ChannelProvider.Twilio</PackageId>
+	  <Product>Transmitly</Product>
+	  <ProductName>Transmit.ly</ProductName>
+	  <Company>Code Impressions</Company>
+	  <Title>Transmit.ly Twilio Channel Provider</Title>
+	  <Description>A channel provider for the Transmitly communications library.</Description>
+	  <Copyright>Copyright © (c) Code Impressions, LLC</Copyright>
+	  <Authors>Code Impressions</Authors>
+	  <PackageLicenseExpression>Apache-2.0</PackageLicenseExpression>
+	  <PackageIcon>icon-dark.png</PackageIcon>
+	  <PackageReadmeFile>README.md</PackageReadmeFile>
+	  <RepositoryUrl>https://github.com/transmitly/transmitly-channel-provider-twilio.git</RepositoryUrl>
+	  <PackageTags>email;twilio;sms;channel provider; transmitly;voice;telephony;phone</PackageTags>
+  </PropertyGroup>
+	<ItemGroup>
+		<PackageReference Include="Twilio" Version="5.81.0" />
+		<PackageReference Include="Transmitly" Version="0.1.0-*" />
+	</ItemGroup>
+</Project>
