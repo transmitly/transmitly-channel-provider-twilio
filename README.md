@@ -18,8 +18,8 @@ using Transmitly;
 var communicationClient = new CommunicationsClientBuilder()
 	.AddTwilioSupport(options =>
 	{
-		options.Username = "myusername";
-		options.Password  = "mypassword";
+		options.AccountSid = "ACCOUNT_SID";
+		options.AuthToken  = "AUTH_TOKEN";
 	})
 ```
 * See the [Transmitly](https://github.com/transmitly/transmitly) project for more details on what a channel provider is and how it can be configured.
