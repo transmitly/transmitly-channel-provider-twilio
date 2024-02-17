@@ -20,8 +20,19 @@
 	  <PackageIcon>icon-dark.png</PackageIcon>
 	  <PackageReadmeFile>README.md</PackageReadmeFile>
 	  <RepositoryUrl>https://github.com/transmitly/transmitly-channel-provider-twilio.git</RepositoryUrl>
-	  <PackageTags>email;twilio;sms;channel provider; transmitly;voice;telephony;phone</PackageTags>
+	  <PackageTags>twilio;sms;channel provider; transmitly;voice;telephony;phone</PackageTags>
   </PropertyGroup>
+
+  <ItemGroup>
+    <None Include="..\..\assets\icon-dark.png">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+    <None Include="..\..\README.md">
+      <Pack>True</Pack>
+      <PackagePath>\</PackagePath>
+    </None>
+  </ItemGroup>
 	<ItemGroup>
 		<PackageReference Include="Twilio" Version="5.81.0" />
 		<PackageReference Include="Transmitly" Version="0.1.0-*" />
