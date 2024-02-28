@@ -36,7 +36,7 @@ namespace Transmitly.ChannelProvider.Twilio
 
 			TwilioClient.Init(opts.AccountSid, opts.AuthToken);
 
-			channelProviderConfiguration.AddChannelProvider(Id.ChannelProvider.Twilio(providerId), new TwilioSmsChannelProviderClient(), Id.Channel.Sms());
+			channelProviderConfiguration.AddChannelProvider<TwilioSmsChannelProviderClient, ISms>(Id.ChannelProvider.Twilio(providerId), Id.Channel.Sms());
 
 			return channelProviderConfiguration;
 		}
