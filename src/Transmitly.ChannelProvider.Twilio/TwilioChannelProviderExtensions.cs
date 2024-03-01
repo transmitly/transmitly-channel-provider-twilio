@@ -13,9 +13,10 @@
 //  limitations under the License.
 
 using System;
+using Transmitly.ChannelProvider.Twilio;
 using Twilio;
 
-namespace Transmitly.ChannelProvider.Twilio
+namespace Transmitly
 {
 	public static class TwilioChannelProviderExtensions
 	{
