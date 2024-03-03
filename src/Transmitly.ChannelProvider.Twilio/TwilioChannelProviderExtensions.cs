@@ -21,13 +21,11 @@ namespace Transmitly
 	public static class TwilioChannelProviderExtensions
 	{
 		private const string TwilioId = "Twilio";
-		private const string DefaultProviderId = "Default";
 
-		public static string Twilio(this ChannelProviders channelProviders, string? providerId = DefaultProviderId)
+		public static string Twilio(this ChannelProviders channelProviders, string? providerId = null)
 		{
 			Guard.AgainstNull(channelProviders);
-
-			return $"{TwilioId}.{(!string.IsNullOrWhiteSpace(providerId) ? providerId : DefaultProviderId)}";
+			return channelProviders.GetId(TwilioId, providerId);
 		}
 
 		public static CommunicationsClientBuilder AddTwilioSupport(this CommunicationsClientBuilder channelProviderConfiguration, Action<TwilioClientOptions> options, string? providerId = null)
