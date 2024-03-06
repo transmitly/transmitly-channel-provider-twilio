@@ -12,6 +12,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+using System;
+
 namespace Transmitly.ChannelProvider.Twilio
 {
 	sealed class TwilioDispatchResult(string sid) : IDispatchResult
@@ -23,5 +25,7 @@ namespace Transmitly.ChannelProvider.Twilio
 		public string? ChannelProviderId { get; }
 
 		public string? ChannelId { get; }
+
+		public Exception? Exception { get; set; }
 	}
 }
