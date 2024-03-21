@@ -25,6 +25,8 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 {
 	internal sealed class TwilioVoiceChannelProviderClient : ChannelProviderClient<IVoice>
 	{
+		private const string MessageIdQueryStringKey = "resourceId";
+
 		public override async Task<IReadOnlyCollection<IDispatchResult?>> DispatchAsync(IVoice voice, IDispatchCommunicationContext communicationContext, CancellationToken cancellationToken)
 		{
 			var voiceProperties = new ExtendedVoiceChannelProperties(voice.ExtendedProperties);
@@ -42,14 +44,14 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 					from: from,
 					url: GetTwiMLCallbackUrl(messageId, voiceProperties, communicationContext),
 					timeout: voiceProperties.Timeout,
-					statusCallback: voiceProperties.StatusCallback != null ? new Uri(voiceProperties.StatusCallback) : null,
+					statusCallback: GetStatusCallbackUrl(messageId, voiceProperties),
 					statusCallbackMethod: voiceProperties.StatusCallbackMethod,
 					machineDetection: ConvertMachineDetection(voice.MachineDetection, voiceProperties.MachineDetection)
 				);
 
 				var twResult = new TwilioDispatchResult(resource.Sid);
 				results.Add(twResult);
-				
+
 				if (IsDispatched(resource))
 					Dispatched(communicationContext, voice, [twResult]);
 				else
@@ -61,7 +63,7 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 
 		private static bool IsDispatched(CallResource resource)
 		{
-			return resource.Status != CallResource.StatusEnum.Failed && resource.Status != CallResource.StatusEnum.Canceled ;
+			return resource.Status != CallResource.StatusEnum.Failed && resource.Status != CallResource.StatusEnum.Canceled;
 		}
 
 		private static string? ConvertMachineDetection(Transmitly.MachineDetection tlyValue, MachineDetection? overrideValue)
@@ -103,6 +105,14 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 				throw new TwilioException(RequiredUrlExceptionMessage);
 
 			return AddParameter(new Uri(url), "resourceId", messageId);
+		}
+
+		private static Uri? GetStatusCallbackUrl(string messageId, ExtendedVoiceChannelProperties voiceProperties)
+		{
+			if (string.IsNullOrWhiteSpace(voiceProperties.StatusCallback))
+				return null;
+
+			return AddParameter(new Uri(voiceProperties.StatusCallback), MessageIdQueryStringKey, messageId);
 		}
 
 		private static Uri AddParameter(Uri url, string paramName, string paramValue)
