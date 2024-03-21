@@ -19,7 +19,7 @@ using System.Threading.Tasks;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Types;
 
-namespace Transmitly.ChannelProvider.Twilio
+namespace Transmitly.ChannelProvider.Twilio.Sms
 {
 	internal sealed class TwilioSmsChannelProviderClient : ChannelProviderClient<ISms>
 	{
@@ -33,11 +33,23 @@ namespace Transmitly.ChannelProvider.Twilio
 
 			foreach (var recipient in recipients)
 			{
-				var message = await MessageResource.CreateAsync(from: sms.From.Value, body: sms.Body, to: recipient);
-				results.Add(new TwilioDispatchResult(message.Sid));
+				Dispatch(communicationContext, sms);
+				var message = await MessageResource.CreateAsync(from: sms.From.Value, body: sms.Message, to: recipient);
+				var twResult = new TwilioDispatchResult(message.Sid);
+
+				results.Add(twResult);
+				if (IsDispatched(message))
+					Dispatched(communicationContext, sms, [twResult]);
+				else
+					Error(communicationContext, sms, [twResult]);
 			}
 
 			return results;
+		}
+
+		private static bool IsDispatched(MessageResource resource)
+		{
+			return resource.Status != MessageResource.StatusEnum.Failed && resource.Status != MessageResource.StatusEnum.Undelivered;
 		}
 	}
 }

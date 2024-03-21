@@ -14,19 +14,46 @@
 
 using System;
 using Transmitly.ChannelProvider.Twilio;
+using Transmitly.ChannelProvider.Twilio.Sms;
+using Transmitly.ChannelProvider.Twilio.Voice;
 using Twilio;
 
 namespace Transmitly
 {
 	public static class TwilioChannelProviderExtensions
 	{
-		private const string TwilioId = "Twilio";
-
+		/// <summary>
+		/// Gets the channel provider id for Twilio.
+		/// </summary>
+		/// <param name="channelProviders">Channel providers object.</param>
+		/// <param name="providerId">Optional channel provider Id.</param>
+		/// <returns>Twilio channel provider id.</returns>
 		public static string Twilio(this ChannelProviders channelProviders, string? providerId = null)
 		{
 			Guard.AgainstNull(channelProviders);
-			return channelProviders.GetId(TwilioId, providerId);
+			return channelProviders.GetId(Constant.Id, providerId);
 		}
+
+		/// <summary>
+		/// Twilio specific settings for Sms channels.
+		/// </summary>
+		/// <param name="sms">Sms Channel.</param>
+		/// <returns>Twilio Sms properties.</returns>
+		//public static ExtendedSmsChannelProperties Twilio(this ISmsChannel sms)
+		//{
+		//	return new ExtendedSmsChannelProperties(sms);
+		//}
+
+		/// <summary>
+		/// Twilio specific settings for voice channels.
+		/// </summary>
+		/// <param name="sms">Voice Channel.</param>
+		/// <returns>Twilio voice properties.</returns>
+		public static ExtendedVoiceChannelProperties Twilio(this IVoiceChannel email)
+		{
+			return new ExtendedVoiceChannelProperties(email);
+		}
+
 
 		public static CommunicationsClientBuilder AddTwilioSupport(this CommunicationsClientBuilder channelProviderConfiguration, Action<TwilioClientOptions> options, string? providerId = null)
 		{
@@ -36,6 +63,7 @@ namespace Transmitly
 			TwilioClient.Init(opts.AccountSid, opts.AuthToken);
 
 			channelProviderConfiguration.AddChannelProvider<TwilioSmsChannelProviderClient, ISms>(Id.ChannelProvider.Twilio(providerId), Id.Channel.Sms());
+			channelProviderConfiguration.AddChannelProvider<TwilioVoiceChannelProviderClient, IVoice>(Id.ChannelProvider.Twilio(providerId), Id.Channel.Voice());
 
 			return channelProviderConfiguration;
 		}

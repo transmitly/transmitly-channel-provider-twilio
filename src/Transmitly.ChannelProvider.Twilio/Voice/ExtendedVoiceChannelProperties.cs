@@ -1,0 +1,102 @@
+﻿// ﻿﻿Copyright (c) Code Impressions, LLC. All Rights Reserved.
+//  
+//  Licensed under the Apache License, Version 2.0 (the "License")
+//  you may not use this file except in compliance with the License.
+//  You may obtain a copy of the License at
+//  
+//      http://www.apache.org/licenses/LICENSE-2.0
+//  
+//  Unless required by applicable law or agreed to in writing, software
+//  distributed under the License is distributed on an "AS IS" BASIS,
+//  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+//  See the License for the specific language governing permissions and
+//  limitations under the License.
+
+using System;
+using Twilio.Http;
+
+namespace Transmitly.ChannelProvider.Twilio.Voice
+{
+	public sealed class ExtendedVoiceChannelProperties
+	{
+		private readonly IExtendedProperties _extendedProperties;
+		private const string ProviderKey = Constant.SmsPropertiesKey;
+
+		internal ExtendedVoiceChannelProperties(IVoiceChannel voiceChannel)
+		{
+			Guard.AgainstNull(voiceChannel);
+			_extendedProperties = Guard.AgainstNull(voiceChannel.ExtendedProperties);
+
+		}
+
+		internal ExtendedVoiceChannelProperties(IExtendedProperties properties)
+		{
+			_extendedProperties = properties;
+		}
+
+		/// <summary>
+		/// The URL we should call to send status information to your application.
+		/// </summary>
+		public string? StatusCallback
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(StatusCallback));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(StatusCallback), value);
+		}
+		/// <summary>
+		/// HTTP method to use to send status information to your application.
+		/// </summary>
+		public HttpMethod? StatusCallbackMethod
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(StatusCallbackMethod));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(StatusCallbackMethod), value);
+		}
+
+		/// <summary>
+		/// Enable machine detection or end of greeting detection.
+		/// </summary>
+		public MachineDetection? MachineDetection
+		{
+			get => _extendedProperties.GetValue<MachineDetection>(ProviderKey, nameof(MachineDetection));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(MachineDetection), value);
+		}
+
+		/// <summary>
+		/// Number of seconds to wait for an answer
+		/// </summary>
+		public int? Timeout
+		{
+			get => _extendedProperties.GetValue<int?>(ProviderKey, nameof(Timeout));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(Timeout), value);
+		}
+
+		/// <summary>
+		/// A resolver that will return the absolute URL that returns TwiML for this call.
+		/// This will override any value set in the <see cref="Url"/> property.
+		/// </summary>
+		public Func<IDispatchCommunicationContext, string>? UrlResolver
+		{
+			get => _extendedProperties.GetValue<Func<IDispatchCommunicationContext, string>>(ProviderKey, nameof(UrlResolver));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(UrlResolver), value);
+		}
+
+		/// <summary>
+		/// The absolute URL that returns TwiML for this call. The communication's ResourceId will be added to the querystring.
+		/// <para>Example: https://yourUrl.com/path?<strong>resourceId=1234abc</strong></para>
+		/// <para>If you require dynamic resolution see: <see cref="UrlResolver"/>. Setting the <see cref="UrlResolver"/> will override this value.</para>
+		/// </summary>
+		public string? Url
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(Url));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(Url), value);
+		}
+
+		/// <summary>
+		/// HTTP method to use to fetch TwiML.
+		/// </summary>
+		public HttpMethod? UrlMethod
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(UrlMethod));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(UrlMethod), value);
+		}
+	}
+}
