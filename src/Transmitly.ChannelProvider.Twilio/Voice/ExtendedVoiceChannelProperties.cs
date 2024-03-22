@@ -42,6 +42,15 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(StatusCallback));
 			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(StatusCallback), value);
 		}
+
+		/// <summary>
+		/// A resolver that will return the URL we should call to send status information to your application.
+		/// </summary>
+		public Func<IDispatchCommunicationContext, string?>? StatusCallbackResolver
+		{
+			get => _extendedProperties.GetValue<Func<IDispatchCommunicationContext, string?>?>(ProviderKey, nameof(StatusCallbackResolver));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(StatusCallbackResolver), value);
+		}
 		/// <summary>
 		/// HTTP method to use to send status information to your application.
 		/// </summary>

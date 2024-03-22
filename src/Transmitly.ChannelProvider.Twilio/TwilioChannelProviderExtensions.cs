@@ -20,7 +20,7 @@ using Twilio;
 
 namespace Transmitly
 {
-	public static class TwilioChannelProviderExtensions
+    public static class TwilioChannelProviderExtensions
 	{
 		/// <summary>
 		/// Gets the channel provider id for Twilio.
@@ -39,10 +39,10 @@ namespace Transmitly
 		/// </summary>
 		/// <param name="sms">Sms Channel.</param>
 		/// <returns>Twilio Sms properties.</returns>
-		//public static ExtendedSmsChannelProperties Twilio(this ISmsChannel sms)
-		//{
-		//	return new ExtendedSmsChannelProperties(sms);
-		//}
+		public static ExtendedSmsChannelProperties Twilio(this ISmsChannel sms)
+		{
+			return new ExtendedSmsChannelProperties(sms);
+		}
 
 		/// <summary>
 		/// Twilio specific settings for voice channels.

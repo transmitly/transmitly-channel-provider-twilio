@@ -12,10 +12,12 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Web;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Types;
 
@@ -23,18 +25,29 @@ namespace Transmitly.ChannelProvider.Twilio.Sms
 {
 	internal sealed class TwilioSmsChannelProviderClient : ChannelProviderClient<ISms>
 	{
+		private const string MessageIdQueryStringKey = "resourceId";
+
 		public override async Task<IReadOnlyCollection<IDispatchResult?>> DispatchAsync(ISms sms, IDispatchCommunicationContext communicationContext, CancellationToken cancellationToken)
 		{
 			Guard.AgainstNull(sms);
 			Guard.AgainstNull(communicationContext);
-			Guard.AgainstNull(sms.From);
+
 			var recipients = communicationContext.RecipientAudiences.SelectMany(a => a.Addresses.Select(addr => new PhoneNumber(addr.Value))).ToList();
+			var smsProperties = new ExtendedSmsChannelProperties(sms.ExtendedProperties);
 			var results = new List<IDispatchResult>(recipients.Count);
+			var messageId = Guid.NewGuid().ToString("N");
 
 			foreach (var recipient in recipients)
 			{
 				Dispatch(communicationContext, sms);
-				var message = await MessageResource.CreateAsync(from: sms.From.Value, body: sms.Message, to: recipient);
+
+				var message = await MessageResource.CreateAsync(
+					recipient,
+					from: sms.From?.Value,
+					body: sms.Message,
+					statusCallback: GetStatusCallbackUrl(messageId, smsProperties, communicationContext)
+				);
+
 				var twResult = new TwilioDispatchResult(message.Sid);
 
 				results.Add(twResult);
@@ -47,9 +60,35 @@ namespace Transmitly.ChannelProvider.Twilio.Sms
 			return results;
 		}
 
+		private static Uri? GetStatusCallbackUrl(string messageId, ExtendedSmsChannelProperties smsProperties, IDispatchCommunicationContext context)
+		{
+			if (string.IsNullOrWhiteSpace(smsProperties.StatusCallback) && smsProperties.StatusCallbackResolver == null)
+				return null;
+
+			string? url = smsProperties.StatusCallback;
+
+			if (smsProperties.StatusCallbackResolver != null)
+				return new Uri(Guard.AgainstNullOrWhiteSpace(smsProperties.StatusCallbackResolver(context)));
+			else if (string.IsNullOrWhiteSpace(url))
+				return null;
+
+			return AddParameter(new Uri(url), MessageIdQueryStringKey, messageId);
+		}
+
 		private static bool IsDispatched(MessageResource resource)
 		{
 			return resource.Status != MessageResource.StatusEnum.Failed && resource.Status != MessageResource.StatusEnum.Undelivered;
+		}
+
+		//Source=https://stackoverflow.com/a/19679135
+		private static Uri AddParameter(Uri url, string paramName, string paramValue)
+		{
+			var uriBuilder = new UriBuilder(url);
+			var query = HttpUtility.ParseQueryString(uriBuilder.Query);
+			query[paramName] = paramValue;
+			uriBuilder.Query = query.ToString();
+
+			return uriBuilder.Uri;
 		}
 	}
 }

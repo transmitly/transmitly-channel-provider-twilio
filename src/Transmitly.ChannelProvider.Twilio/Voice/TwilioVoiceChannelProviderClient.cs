@@ -44,7 +44,7 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 					from: from,
 					url: GetTwiMLCallbackUrl(messageId, voiceProperties, communicationContext),
 					timeout: voiceProperties.Timeout,
-					statusCallback: GetStatusCallbackUrl(messageId, voiceProperties),
+					statusCallback: GetStatusCallbackUrl(messageId, voiceProperties, communicationContext),
 					statusCallbackMethod: voiceProperties.StatusCallbackMethod,
 					machineDetection: ConvertMachineDetection(voice.MachineDetection, voiceProperties.MachineDetection)
 				);
@@ -104,17 +104,25 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 			else if (string.IsNullOrWhiteSpace(url))
 				throw new TwilioException(RequiredUrlExceptionMessage);
 
-			return AddParameter(new Uri(url), "resourceId", messageId);
+			return AddParameter(new Uri(url), MessageIdQueryStringKey, messageId);
 		}
 
-		private static Uri? GetStatusCallbackUrl(string messageId, ExtendedVoiceChannelProperties voiceProperties)
+		private static Uri? GetStatusCallbackUrl(string messageId, ExtendedVoiceChannelProperties voiceProperties, IDispatchCommunicationContext context)
 		{
-			if (string.IsNullOrWhiteSpace(voiceProperties.StatusCallback))
+			if (string.IsNullOrWhiteSpace(voiceProperties.StatusCallback) && voiceProperties.StatusCallbackResolver == null)
 				return null;
 
-			return AddParameter(new Uri(voiceProperties.StatusCallback), MessageIdQueryStringKey, messageId);
+			string? url = voiceProperties.StatusCallback;
+
+			if (voiceProperties.StatusCallbackResolver != null)
+				return new Uri(Guard.AgainstNullOrWhiteSpace(voiceProperties.StatusCallbackResolver(context)));
+			else if (string.IsNullOrWhiteSpace(url))
+				return null;
+
+			return AddParameter(new Uri(url), MessageIdQueryStringKey, messageId);
 		}
 
+		//Source=https://stackoverflow.com/a/19679135
 		private static Uri AddParameter(Uri url, string paramName, string paramValue)
 		{
 			var uriBuilder = new UriBuilder(url);
