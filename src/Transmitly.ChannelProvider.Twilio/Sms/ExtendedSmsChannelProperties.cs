@@ -13,10 +13,14 @@
 //  limitations under the License.
 
 using System;
+using System.Threading.Tasks;
 using Twilio.Http;
 
 namespace Transmitly.ChannelProvider.Twilio.Sms
 {
+	/// <summary>
+	/// Twilio specific SMS channel properties 
+	/// </summary>
 	public sealed class ExtendedSmsChannelProperties
 	{
 		private readonly IExtendedProperties _extendedProperties;
@@ -37,19 +41,19 @@ namespace Transmitly.ChannelProvider.Twilio.Sms
 		/// <summary>
 		/// The URL we should call to send status information to your application.
 		/// </summary>
-		public string? StatusCallback
+		public string? StatusCallbackUrl
 		{
-			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(StatusCallback));
-			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(StatusCallback), value);
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(StatusCallbackUrl));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(StatusCallbackUrl), value);
 		}
 
 		/// <summary>
 		/// A resolver that will return the URL we should call to send status information to your application.
 		/// </summary>
-		public Func<IDispatchCommunicationContext, string?>? StatusCallbackResolver
+		public Func<IDispatchCommunicationContext, Task<string?>>? StatusCallbackUrlResolver
 		{
-			get => _extendedProperties.GetValue<Func<IDispatchCommunicationContext, string?>?>(ProviderKey, nameof(StatusCallbackResolver));
-			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(StatusCallbackResolver), value);
+			get => _extendedProperties.GetValue<Func<IDispatchCommunicationContext, Task<string?>>?>(ProviderKey, nameof(StatusCallbackUrlResolver));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(StatusCallbackUrlResolver), value);
 		}
 
 		/// <summary>
@@ -59,6 +63,15 @@ namespace Transmitly.ChannelProvider.Twilio.Sms
 		{
 			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(StatusCallbackMethod));
 			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(StatusCallbackMethod), value);
+		}
+
+		/// <summary>
+		/// The SID of the Messaging Service you want to associate with the message.
+		/// </summary>
+		public string? MessagingServiceSid
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(MessagingServiceSid));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(MessagingServiceSid), value);
 		}
 	}
 }

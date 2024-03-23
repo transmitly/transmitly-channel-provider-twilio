@@ -27,6 +27,13 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 	{
 		private const string MessageIdQueryStringKey = "resourceId";
 
+		/// <summary>
+		/// Dispatches a Voice communication using Twilio.
+		/// </summary>
+		/// <param name="voice">Voice communication.</param>
+		/// <param name="communicationContext">Context of the dispatch.</param>
+		/// <param name="cancellationToken">Cancellation token</param>
+		/// <returns>Result of the dispatch.</returns>
 		public override async Task<IReadOnlyCollection<IDispatchResult?>> DispatchAsync(IVoice voice, IDispatchCommunicationContext communicationContext, CancellationToken cancellationToken)
 		{
 			var voiceProperties = new ExtendedVoiceChannelProperties(voice.ExtendedProperties);
@@ -44,9 +51,9 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 				var resource = await CallResource.CreateAsync(
 					to: recipient,
 					from: from,
-					url: GetTwiMLCallbackUrl(messageId, voiceProperties, communicationContext),
+					url: await GetTwiMLCallbackUrl(messageId, voiceProperties, communicationContext).ConfigureAwait(false),
 					timeout: voiceProperties.Timeout,
-					statusCallback: GetStatusCallbackUrl(messageId, voiceProperties, communicationContext),
+					statusCallback: await GetStatusCallbackUrl(messageId, voiceProperties, voice, communicationContext).ConfigureAwait(false),
 					statusCallbackMethod: voiceProperties.StatusCallbackMethod,
 					machineDetection: ConvertMachineDetection(voice.MachineDetection, voiceProperties.MachineDetection)
 				);
@@ -92,7 +99,7 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 			return Enum.GetName(typeof(MachineDetection), value);
 		}
 
-		private static Uri GetTwiMLCallbackUrl(string messageId, ExtendedVoiceChannelProperties voiceProperties, IDispatchCommunicationContext context)
+		private static async Task<Uri> GetTwiMLCallbackUrl(string messageId, ExtendedVoiceChannelProperties voiceProperties, IDispatchCommunicationContext context)
 		{
 			const string RequiredUrlExceptionMessage = $"Twilio requires a url that returns TwiML when called. Ensure you have a value set for the Twilio extended property: '{nameof(voiceProperties.Url)}' OR '{nameof(voiceProperties.UrlResolver)}'.";
 
@@ -102,23 +109,27 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 			string? url = voiceProperties.Url;
 
 			if (voiceProperties.UrlResolver != null)
-				return new Uri(Guard.AgainstNullOrWhiteSpace(voiceProperties.UrlResolver(context)));
+				return new Uri(Guard.AgainstNullOrWhiteSpace(await voiceProperties.UrlResolver(context).ConfigureAwait(false)));
 			else if (string.IsNullOrWhiteSpace(url))
 				throw new TwilioException(RequiredUrlExceptionMessage);
 
 			return AddParameter(new Uri(url), MessageIdQueryStringKey, messageId);
 		}
 
-		private static Uri? GetStatusCallbackUrl(string messageId, ExtendedVoiceChannelProperties voiceProperties, IDispatchCommunicationContext context)
+		private static async Task<Uri?> GetStatusCallbackUrl(string messageId, ExtendedVoiceChannelProperties voiceProperties, IVoice voice, IDispatchCommunicationContext context)
 		{
-			if (string.IsNullOrWhiteSpace(voiceProperties.StatusCallback) && voiceProperties.StatusCallbackResolver == null)
-				return null;
+			string? url = voiceProperties.StatusCallbackUrl ?? voice.StatusCallbackUrl;
 
-			string? url = voiceProperties.StatusCallback;
+			var resolveUrl = voiceProperties.StatusCallbackUrlResolver ?? voice.StatusCallbackUrlResolver;
+			if (resolveUrl != null)
+			{
+				var urlResult = await resolveUrl(context).ConfigureAwait(false);
+				if (string.IsNullOrWhiteSpace(urlResult))
+					return null;
+				return new Uri(urlResult);
+			}
 
-			if (voiceProperties.StatusCallbackResolver != null)
-				return new Uri(Guard.AgainstNullOrWhiteSpace(voiceProperties.StatusCallbackResolver(context)));
-			else if (string.IsNullOrWhiteSpace(url))
+			if (string.IsNullOrWhiteSpace(url))
 				return null;
 
 			return AddParameter(new Uri(url), MessageIdQueryStringKey, messageId);

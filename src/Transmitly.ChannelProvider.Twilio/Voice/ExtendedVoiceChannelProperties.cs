@@ -38,19 +38,19 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 		/// <summary>
 		/// The URL we should call to send status information to your application.
 		/// </summary>
-		public string? StatusCallback
+		public string? StatusCallbackUrl
 		{
-			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(StatusCallback));
-			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(StatusCallback), value);
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(StatusCallbackUrl));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(StatusCallbackUrl), value);
 		}
 
 		/// <summary>
 		/// A resolver that will return the URL we should call to send status information to your application.
 		/// </summary>
-		public Func<IDispatchCommunicationContext, string?>? StatusCallbackResolver
+		public Func<IDispatchCommunicationContext, Task<string?>>? StatusCallbackUrlResolver
 		{
-			get => _extendedProperties.GetValue<Func<IDispatchCommunicationContext, string?>?>(ProviderKey, nameof(StatusCallbackResolver));
-			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(StatusCallbackResolver), value);
+			get => _extendedProperties.GetValue<Func<IDispatchCommunicationContext, Task<string?>>?>(ProviderKey, nameof(StatusCallbackUrlResolver));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(StatusCallbackUrlResolver), value);
 		}
 		/// <summary>
 		/// HTTP method to use to send status information to your application.
@@ -83,9 +83,9 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 		/// A resolver that will return the absolute URL that returns TwiML for this call.
 		/// This will override any value set in the <see cref="Url"/> property.
 		/// </summary>
-		public Func<IDispatchCommunicationContext, string>? UrlResolver
+		public Func<IDispatchCommunicationContext, Task<string?>>? UrlResolver
 		{
-			get => _extendedProperties.GetValue<Func<IDispatchCommunicationContext, string>>(ProviderKey, nameof(UrlResolver));
+			get => _extendedProperties.GetValue<Func<IDispatchCommunicationContext, Task<string?>>>(ProviderKey, nameof(UrlResolver));
 			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(UrlResolver), value);
 		}
 

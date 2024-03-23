@@ -45,7 +45,8 @@ namespace Transmitly.ChannelProvider.Twilio.Sms
 					recipient,
 					from: sms.From?.Value,
 					body: sms.Message,
-					statusCallback: GetStatusCallbackUrl(messageId, smsProperties, communicationContext)
+					messagingServiceSid: smsProperties.MessagingServiceSid,
+					statusCallback: await GetStatusCallbackUrl(messageId, smsProperties, sms, communicationContext).ConfigureAwait(false)
 				);
 
 				var twResult = new TwilioDispatchResult(message.Sid);
@@ -60,16 +61,20 @@ namespace Transmitly.ChannelProvider.Twilio.Sms
 			return results;
 		}
 
-		private static Uri? GetStatusCallbackUrl(string messageId, ExtendedSmsChannelProperties smsProperties, IDispatchCommunicationContext context)
+		private static async Task<Uri?> GetStatusCallbackUrl(string messageId, ExtendedSmsChannelProperties smsProperties, ISms sms, IDispatchCommunicationContext context)
 		{
-			if (string.IsNullOrWhiteSpace(smsProperties.StatusCallback) && smsProperties.StatusCallbackResolver == null)
-				return null;
+			string? url = smsProperties.StatusCallbackUrl ?? sms.StatusCallbackUrl;
 
-			string? url = smsProperties.StatusCallback;
-
-			if (smsProperties.StatusCallbackResolver != null)
-				return new Uri(Guard.AgainstNullOrWhiteSpace(smsProperties.StatusCallbackResolver(context)));
-			else if (string.IsNullOrWhiteSpace(url))
+			var resolveUrl = smsProperties.StatusCallbackUrlResolver ?? sms.StatusCallbackUrlResolver;
+			if (resolveUrl != null)
+			{
+				var urlResult = await resolveUrl(context).ConfigureAwait(false);
+				if (string.IsNullOrWhiteSpace(urlResult))
+					return null;
+				return new Uri(urlResult);
+			}
+			
+			if (string.IsNullOrWhiteSpace(url))
 				return null;
 
 			return AddParameter(new Uri(url), MessageIdQueryStringKey, messageId);
