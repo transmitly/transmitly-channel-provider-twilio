@@ -43,7 +43,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sms
 
 				var message = await MessageResource.CreateAsync(
 					recipient,
-					from: sms.From?.Value,
+					from: string.IsNullOrWhiteSpace(smsProperties.MessagingServiceSid) ? sms.From?.Value : null,
 					body: sms.Message,
 					messagingServiceSid: smsProperties.MessagingServiceSid,
 					statusCallback: await GetStatusCallbackUrl(messageId, smsProperties, sms, communicationContext).ConfigureAwait(false)
@@ -73,7 +73,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sms
 					return null;
 				return new Uri(urlResult);
 			}
-			
+
 			if (string.IsNullOrWhiteSpace(url))
 				return null;
 
