@@ -57,7 +57,7 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 		/// </summary>
 		public HttpMethod? StatusCallbackMethod
 		{
-			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(StatusCallbackMethod));
+			get => _extendedProperties.GetValue<HttpMethod?>(ProviderKey, nameof(StatusCallbackMethod));
 			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(StatusCallbackMethod), value);
 		}
 
@@ -105,7 +105,7 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 		/// </summary>
 		public HttpMethod? UrlMethod
 		{
-			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(UrlMethod));
+			get => _extendedProperties.GetValue<HttpMethod?>(ProviderKey, nameof(UrlMethod));
 			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(UrlMethod), value);
 		}
 

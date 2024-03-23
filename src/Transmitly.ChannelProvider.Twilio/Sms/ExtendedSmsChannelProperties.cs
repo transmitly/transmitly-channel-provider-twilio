@@ -61,7 +61,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sms
 		/// </summary>
 		public HttpMethod? StatusCallbackMethod
 		{
-			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(StatusCallbackMethod));
+			get => _extendedProperties.GetValue<HttpMethod?>(ProviderKey, nameof(StatusCallbackMethod));
 			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(StatusCallbackMethod), value);
 		}
 
