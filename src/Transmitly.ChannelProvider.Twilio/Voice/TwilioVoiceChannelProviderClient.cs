@@ -27,6 +27,7 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 	{
 		private const string MessageIdQueryStringKey = "resourceId";
 
+		public override IReadOnlyCollection<string>? RegisteredEvents => [DeliveryReportEvent.Name.Dispatch(), DeliveryReportEvent.Name.Dispatched(), DeliveryReportEvent.Name.Error()];
 		/// <summary>
 		/// Dispatches a Voice communication using Twilio.
 		/// </summary>

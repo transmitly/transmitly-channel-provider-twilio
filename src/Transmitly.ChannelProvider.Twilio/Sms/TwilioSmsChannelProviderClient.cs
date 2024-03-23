@@ -26,7 +26,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sms
 	internal sealed class TwilioSmsChannelProviderClient : ChannelProviderClient<ISms>
 	{
 		private const string MessageIdQueryStringKey = "resourceId";
-
+		public override IReadOnlyCollection<string>? RegisteredEvents => [DeliveryReportEvent.Name.Dispatch(), DeliveryReportEvent.Name.Dispatched(), DeliveryReportEvent.Name.Error()];
 		public override async Task<IReadOnlyCollection<IDispatchResult?>> DispatchAsync(ISms sms, IDispatchCommunicationContext communicationContext, CancellationToken cancellationToken)
 		{
 			Guard.AgainstNull(sms);
