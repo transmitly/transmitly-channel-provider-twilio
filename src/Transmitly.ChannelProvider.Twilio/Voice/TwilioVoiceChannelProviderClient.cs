@@ -37,6 +37,8 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 			foreach (var recipient in recipients)
 			{
 				Dispatch(communicationContext, voice);
+				if (voiceProperties.OnStoreMessageForRetrievalAsync != null)
+					_ = Task.Run(() => voiceProperties.OnStoreMessageForRetrievalAsync(voice, communicationContext).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
 				var messageId = Guid.NewGuid().ToString("N");
 				var resource = await CallResource.CreateAsync(

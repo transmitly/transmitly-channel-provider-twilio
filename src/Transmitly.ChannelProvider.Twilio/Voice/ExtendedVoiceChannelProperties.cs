@@ -13,6 +13,7 @@
 //  limitations under the License.
 
 using System;
+using System.Threading.Tasks;
 using Twilio.Http;
 
 namespace Transmitly.ChannelProvider.Twilio.Voice
@@ -106,6 +107,16 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 		{
 			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(UrlMethod));
 			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(UrlMethod), value);
+		}
+
+		/// <summary>
+		/// Called upon dispatch of message for storage prior to Twilio retrieval. 
+		/// <para><seealso cref="UrlResolver"/> or <seealso cref="Url"/></para>
+		/// </summary>
+		public Func<IVoice, IDispatchCommunicationContext, Task>? OnStoreMessageForRetrievalAsync
+		{
+			get => _extendedProperties.GetValue<Func<IVoice, IDispatchCommunicationContext, Task>?>(ProviderKey, nameof(OnStoreMessageForRetrievalAsync));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(OnStoreMessageForRetrievalAsync), value);
 		}
 	}
 }
