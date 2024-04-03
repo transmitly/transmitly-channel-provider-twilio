@@ -27,7 +27,6 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 	{
 		private const string MessageIdQueryStringKey = "resourceId";
 
-		public override IReadOnlyCollection<string>? RegisteredEvents => [DeliveryReportEvent.Name.Dispatch(), DeliveryReportEvent.Name.Dispatched(), DeliveryReportEvent.Name.Error()];
 		/// <summary>
 		/// Dispatches a Voice communication using Twilio.
 		/// </summary>
@@ -119,9 +118,9 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 
 		private static async Task<Uri?> GetStatusCallbackUrl(string messageId, ExtendedVoiceChannelProperties voiceProperties, IVoice voice, IDispatchCommunicationContext context)
 		{
-			string? url = voiceProperties.StatusCallbackUrl ?? voice.StatusCallbackUrl;
+			string? url = voiceProperties.StatusCallbackUrl ?? voice.DeliveryReportCallbackUrl;
 
-			var resolveUrl = voiceProperties.StatusCallbackUrlResolver ?? voice.StatusCallbackUrlResolver;
+			var resolveUrl = voiceProperties.StatusCallbackUrlResolver ?? voice.DeliveryReportCallbackUrlResolver;
 			if (resolveUrl != null)
 			{
 				var urlResult = await resolveUrl(context).ConfigureAwait(false);

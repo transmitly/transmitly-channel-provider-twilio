@@ -26,7 +26,6 @@ namespace Transmitly.ChannelProvider.Twilio.Sms
 	internal sealed class TwilioSmsChannelProviderClient : ChannelProviderClient<ISms>
 	{
 		private const string MessageIdQueryStringKey = "resourceId";
-		public override IReadOnlyCollection<string>? RegisteredEvents => [DeliveryReportEvent.Name.Dispatch(), DeliveryReportEvent.Name.Dispatched(), DeliveryReportEvent.Name.Error()];
 		public override async Task<IReadOnlyCollection<IDispatchResult?>> DispatchAsync(ISms sms, IDispatchCommunicationContext communicationContext, CancellationToken cancellationToken)
 		{
 			Guard.AgainstNull(sms);
@@ -63,9 +62,9 @@ namespace Transmitly.ChannelProvider.Twilio.Sms
 
 		private static async Task<Uri?> GetStatusCallbackUrl(string messageId, ExtendedSmsChannelProperties smsProperties, ISms sms, IDispatchCommunicationContext context)
 		{
-			string? url = smsProperties.StatusCallbackUrl ?? sms.StatusCallbackUrl;
+			string? url = smsProperties.StatusCallbackUrl ?? sms.DeliveryReportCallbackUrl;
 
-			var resolveUrl = smsProperties.StatusCallbackUrlResolver ?? sms.StatusCallbackUrlResolver;
+			var resolveUrl = smsProperties.StatusCallbackUrlResolver ?? sms.DeliveryReportCallbackUrlResolver;
 			if (resolveUrl != null)
 			{
 				var urlResult = await resolveUrl(context).ConfigureAwait(false);
