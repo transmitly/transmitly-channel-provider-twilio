@@ -17,16 +17,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
-using Twilio.Rest.Api.V2010.Account;
-using Twilio.Types;
+using Transmitly.Delivery;
+using TW = Twilio.Rest.Api.V2010.Account;
+using TWT =Twilio.Types;
 
 namespace Transmitly.ChannelProvider.Twilio.Voice
 {
 	internal sealed class TwilioVoiceChannelProviderClient : ChannelProviderClient<IVoice>
 	{
-		private const string MessageIdQueryStringKey = "resourceId";
-
 		/// <summary>
 		/// Dispatches a Voice communication using Twilio.
 		/// </summary>
@@ -37,26 +35,26 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 		public override async Task<IReadOnlyCollection<IDispatchResult?>> DispatchAsync(IVoice voice, IDispatchCommunicationContext communicationContext, CancellationToken cancellationToken)
 		{
 			var voiceProperties = new ExtendedVoiceChannelProperties(voice.ExtendedProperties);
-			var recipients = communicationContext.RecipientAudiences.SelectMany(a => a.Addresses.Select(addr => new PhoneNumber(addr.Value))).ToList();
+			var recipients = communicationContext.RecipientAudiences.SelectMany(a => a.Addresses.Select(addr => new TWT.PhoneNumber(addr.Value))).ToList();
 			var results = new List<IDispatchResult>(recipients.Count);
-			var from = new PhoneNumber(Guard.AgainstNull(voice.From).Value);
+			var from = new TWT.PhoneNumber(Guard.AgainstNull(voice.From).Value);
 
 			foreach (var recipient in recipients)
 			{
 				Dispatch(communicationContext, voice);
+
 				if (voiceProperties.OnStoreMessageForRetrievalAsync != null)
 					_ = Task.Run(() => voiceProperties.OnStoreMessageForRetrievalAsync(voice, communicationContext).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
-				var messageId = Guid.NewGuid().ToString("N");
-				var resource = await CallResource.CreateAsync(
+				var resource = await TW.CallResource.CreateAsync(
 					to: recipient,
 					from: from,
-					url: await GetTwiMLCallbackUrl(messageId, voiceProperties, communicationContext).ConfigureAwait(false),
+					url: await GetTwiMLCallbackUrl(voiceProperties, communicationContext).ConfigureAwait(false),
 					timeout: voiceProperties.Timeout,
-					statusCallback: await GetStatusCallbackUrl(messageId, voiceProperties, voice, communicationContext).ConfigureAwait(false),
+					statusCallback: await GetStatusCallbackUrl(voiceProperties, voice, communicationContext).ConfigureAwait(false),
 					statusCallbackMethod: voiceProperties.StatusCallbackMethod,
 					machineDetection: ConvertMachineDetection(voice.MachineDetection, voiceProperties.MachineDetection)
-				);
+				).ConfigureAwait(false);
 
 				var twResult = new TwilioDispatchResult(resource.Sid);
 				results.Add(twResult);
@@ -70,17 +68,17 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 			return results;
 		}
 
-		private static bool IsDispatched(CallResource resource)
+		private static bool IsDispatched(TW.CallResource resource)
 		{
-			return resource.Status != CallResource.StatusEnum.Failed && resource.Status != CallResource.StatusEnum.Canceled;
+			return resource.Status != TW.CallResource.StatusEnum.Failed && resource.Status != TW.CallResource.StatusEnum.Canceled;
 		}
 
-		private static string? ConvertMachineDetection(Transmitly.MachineDetection tlyValue, MachineDetection? overrideValue)
+		private static string? ConvertMachineDetection(Transmitly.MachineDetection tlyValue, MachineDetection? twilioSpecificValue)
 		{
 			MachineDetection? value;
-			if (overrideValue.HasValue)
+			if (twilioSpecificValue.HasValue)
 			{
-				value = overrideValue;
+				value = twilioSpecificValue;
 			}
 			else
 			{
@@ -99,7 +97,7 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 			return Enum.GetName(typeof(MachineDetection), value);
 		}
 
-		private static async Task<Uri> GetTwiMLCallbackUrl(string messageId, ExtendedVoiceChannelProperties voiceProperties, IDispatchCommunicationContext context)
+		private static async Task<Uri> GetTwiMLCallbackUrl(ExtendedVoiceChannelProperties voiceProperties, IDispatchCommunicationContext context)
 		{
 			const string RequiredUrlExceptionMessage = $"Twilio requires a url that returns TwiML when called. Ensure you have a value set for the Twilio extended property: '{nameof(voiceProperties.Url)}' OR '{nameof(voiceProperties.UrlResolver)}'.";
 
@@ -109,41 +107,27 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 			string? url = voiceProperties.Url;
 
 			if (voiceProperties.UrlResolver != null)
-				return new Uri(Guard.AgainstNullOrWhiteSpace(await voiceProperties.UrlResolver(context).ConfigureAwait(false)));
-			else if (string.IsNullOrWhiteSpace(url))
+				url = await voiceProperties.UrlResolver(context).ConfigureAwait(false);
+
+			if (string.IsNullOrWhiteSpace(url))
 				throw new TwilioException(RequiredUrlExceptionMessage);
 
-			return AddParameter(new Uri(url), MessageIdQueryStringKey, messageId);
+			return new Uri(url).AddPipelineContext(string.Empty, context.PipelineName, context.ChannelId, context.ChannelProviderId);
 		}
 
-		private static async Task<Uri?> GetStatusCallbackUrl(string messageId, ExtendedVoiceChannelProperties voiceProperties, IVoice voice, IDispatchCommunicationContext context)
+		private static async Task<Uri?> GetStatusCallbackUrl(ExtendedVoiceChannelProperties voiceProperties, IVoice voice, IDispatchCommunicationContext context)
 		{
-			string? url = voiceProperties.StatusCallbackUrl ?? voice.DeliveryReportCallbackUrl;
-
-			var resolveUrl = voiceProperties.StatusCallbackUrlResolver ?? voice.DeliveryReportCallbackUrlResolver;
-			if (resolveUrl != null)
-			{
-				var urlResult = await resolveUrl(context).ConfigureAwait(false);
-				if (string.IsNullOrWhiteSpace(urlResult))
-					return null;
-				return new Uri(urlResult);
-			}
+			string? url;
+			var urlResolver = voiceProperties.StatusCallbackUrlResolver ?? voice.DeliveryReportCallbackUrlResolver;
+			if (urlResolver != null)
+				url = await urlResolver(context).ConfigureAwait(false);
+			else
+				url = voiceProperties.StatusCallbackUrl ?? voice.DeliveryReportCallbackUrl;
 
 			if (string.IsNullOrWhiteSpace(url))
 				return null;
 
-			return AddParameter(new Uri(url), MessageIdQueryStringKey, messageId);
-		}
-
-		//Source=https://stackoverflow.com/a/19679135
-		private static Uri AddParameter(Uri url, string paramName, string paramValue)
-		{
-			var uriBuilder = new UriBuilder(url);
-			var query = HttpUtility.ParseQueryString(uriBuilder.Query);
-			query[paramName] = paramValue;
-			uriBuilder.Query = query.ToString();
-
-			return uriBuilder.Uri;
+			return new Uri(url).AddPipelineContext(string.Empty, context.PipelineName, context.ChannelId, context.ChannelProviderId);
 		}
 	}
 }

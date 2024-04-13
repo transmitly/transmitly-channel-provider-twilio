@@ -17,7 +17,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-using System.Web;
+using Transmitly.Delivery;
+using Twilio;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.Types;
 
@@ -25,7 +26,6 @@ namespace Transmitly.ChannelProvider.Twilio.Sms
 {
 	internal sealed class TwilioSmsChannelProviderClient : ChannelProviderClient<ISms>
 	{
-		private const string MessageIdQueryStringKey = "resourceId";
 		public override async Task<IReadOnlyCollection<IDispatchResult?>> DispatchAsync(ISms sms, IDispatchCommunicationContext communicationContext, CancellationToken cancellationToken)
 		{
 			Guard.AgainstNull(sms);
@@ -46,7 +46,7 @@ namespace Transmitly.ChannelProvider.Twilio.Sms
 					body: sms.Message,
 					messagingServiceSid: smsProperties.MessagingServiceSid,
 					statusCallback: await GetStatusCallbackUrl(messageId, smsProperties, sms, communicationContext).ConfigureAwait(false)
-				);
+				).ConfigureAwait(false);
 
 				var twResult = new TwilioDispatchResult(message.Sid);
 
@@ -76,23 +76,12 @@ namespace Transmitly.ChannelProvider.Twilio.Sms
 			if (string.IsNullOrWhiteSpace(url))
 				return null;
 
-			return AddParameter(new Uri(url), MessageIdQueryStringKey, messageId);
+			return new Uri(url).AddPipelineContext(messageId, context.PipelineName, context.ChannelId, context.ChannelProviderId);
 		}
 
 		private static bool IsDispatched(MessageResource resource)
 		{
 			return resource.Status != MessageResource.StatusEnum.Failed && resource.Status != MessageResource.StatusEnum.Undelivered;
-		}
-
-		//Source=https://stackoverflow.com/a/19679135
-		private static Uri AddParameter(Uri url, string paramName, string paramValue)
-		{
-			var uriBuilder = new UriBuilder(url);
-			var query = HttpUtility.ParseQueryString(uriBuilder.Query);
-			query[paramName] = paramValue;
-			uriBuilder.Query = query.ToString();
-
-			return uriBuilder.Uri;
 		}
 	}
 }

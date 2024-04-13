@@ -13,14 +13,19 @@
 //  limitations under the License.
 
 using System;
+using System.IO;
+using System.Text;
+using System.Xml.Linq;
+using System.Xml;
 using Transmitly.ChannelProvider.Twilio;
 using Transmitly.ChannelProvider.Twilio.Sms;
 using Transmitly.ChannelProvider.Twilio.Voice;
-using Twilio;
+using Transmitly.Delivery;
+using TW=Twilio;
 
 namespace Transmitly
 {
-    public static class TwilioChannelProviderExtensions
+	public static class TwilioChannelProviderExtensions
 	{
 		/// <summary>
 		/// Gets the channel provider id for Twilio.
@@ -49,23 +54,51 @@ namespace Transmitly
 		/// </summary>
 		/// <param name="sms">Voice Channel.</param>
 		/// <returns>Twilio voice properties.</returns>
-		public static ExtendedVoiceChannelProperties Twilio(this IVoiceChannel email)
+		public static ExtendedVoiceChannelProperties Twilio(this IVoiceChannel voice)
 		{
-			return new ExtendedVoiceChannelProperties(email);
+			return new ExtendedVoiceChannelProperties(voice);
 		}
 
+		/// <summary>
+		/// Twilio specific settings for sms delivery reports.
+		/// </summary>
+		/// <param name="deliveryReport">Delivery Report.</param>
+		/// <returns>Twilio SMS delivery report properties.</returns>
+		public static DeliveryReportExtendedProperties Twilio(this DeliveryReport deliveryReport)
+		{
+			return new DeliveryReportExtendedProperties(deliveryReport);
+		}
 
-		public static CommunicationsClientBuilder AddTwilioSupport(this CommunicationsClientBuilder channelProviderConfiguration, Action<TwilioClientOptions> options, string? providerId = null)
+		/// <summary>
+		/// Adds channel provider support for Twilio.
+		/// </summary>
+		/// <param name="builder">Communications builder.</param>
+		/// <param name="options">Twilio options.</param>
+		/// <param name="providerId">Optional channel provider Id.</param>
+		/// <returns></returns>
+		public static CommunicationsClientBuilder AddTwilioSupport(this CommunicationsClientBuilder builder, Action<TwilioClientOptions> options, string? providerId = null)
 		{
 			var opts = new TwilioClientOptions();
 			options(opts);
 
-			TwilioClient.Init(opts.AccountSid, opts.AuthToken);
+			TW.TwilioClient.Init(opts.AccountSid, opts.AuthToken);
 
-			channelProviderConfiguration.AddChannelProvider<TwilioSmsChannelProviderClient, ISms>(Id.ChannelProvider.Twilio(providerId), Id.Channel.Sms());
-			channelProviderConfiguration.AddChannelProvider<TwilioVoiceChannelProviderClient, IVoice>(Id.ChannelProvider.Twilio(providerId), Id.Channel.Voice());
+			builder.AddChannelProvider<TwilioSmsChannelProviderClient, ISms>(Id.ChannelProvider.Twilio(providerId), Id.Channel.Sms());
+			builder.AddChannelProvider<TwilioVoiceChannelProviderClient, IVoice>(Id.ChannelProvider.Twilio(providerId), Id.Channel.Voice());
+			builder.ChannelProvider.AddDeliveryReportRequestAdaptor<SmsDeliveryStatusReportAdaptor>();
+			builder.ChannelProvider.AddDeliveryReportRequestAdaptor<VoiceDeliveryStatusReportAdaptor>();
+			return builder;
+		}
 
-			return channelProviderConfiguration;
+		public static string ToTwiML(this string message)
+		{
+			MemoryStream input = new(Encoding.UTF8.GetBytes(message));
+			XmlReaderSettings xmlReaderSettings = new()
+			{
+				DtdProcessing = DtdProcessing.Prohibit
+			};
+			XmlReader reader = XmlReader.Create(input, xmlReaderSettings);
+			return XDocument.Load(reader).ToString();
 		}
 	}
 }

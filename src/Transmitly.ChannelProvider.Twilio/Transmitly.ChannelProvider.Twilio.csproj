@@ -20,10 +20,16 @@
 		<PackageIcon>icon-dark.png</PackageIcon>
 		<PackageReadmeFile>README.md</PackageReadmeFile>
 		<RepositoryUrl>https://github.com/transmitly/transmitly-channel-provider-twilio.git</RepositoryUrl>
+		<PackageIconUrl>https://github.com/transmitly/transmitly-channel-provider-twilio/blob/main/assets/icon-dark.png</PackageIconUrl>
 		<PackageTags>twilio sms channel provider transmitly voice</PackageTags>
 		<GenerateDocumentationFile>true</GenerateDocumentationFile>
 	</PropertyGroup>
-
+	<PropertyGroup Condition="'$(TF_BUILD)' == 'true'">
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	</PropertyGroup>
+	<PropertyGroup Condition="'$(GITHUB_ACTIONS)' == 'true'">
+		<ContinuousIntegrationBuild>true</ContinuousIntegrationBuild>
+	</PropertyGroup>
 	<ItemGroup>
 		<None Include="..\..\assets\icon-dark.png">
 			<Pack>True</Pack>
@@ -37,8 +43,6 @@
 	<ItemGroup>
 		<PackageReference Include="Twilio" Version="5.31.4" />
 		<PackageReference Include="Transmitly" Version="0.1.0-*" />
-	</ItemGroup>
-	<ItemGroup>
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="1.1.1" PrivateAssets="All" />
 		<PackageReference Include="PolySharp" Version="1.14.1" PrivateAssets="All" />
 	</ItemGroup>

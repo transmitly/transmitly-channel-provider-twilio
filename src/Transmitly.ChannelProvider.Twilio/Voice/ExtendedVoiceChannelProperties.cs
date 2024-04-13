@@ -13,15 +13,18 @@
 //  limitations under the License.
 
 using System;
+using System.ComponentModel;
+using System.Linq;
+using System.Runtime.Serialization;
 using System.Threading.Tasks;
 using Twilio.Http;
 
 namespace Transmitly.ChannelProvider.Twilio.Voice
 {
-	public sealed class ExtendedVoiceChannelProperties
+	public sealed class ExtendedVoiceChannelProperties : ICustomTypeDescriptor
 	{
 		private readonly IExtendedProperties _extendedProperties;
-		private const string ProviderKey = Constant.SmsPropertiesKey;
+		private const string ProviderKey = Constant.VoicePropertiesKey;
 
 		internal ExtendedVoiceChannelProperties(IVoiceChannel voiceChannel)
 		{
@@ -83,6 +86,7 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 		/// A resolver that will return the absolute URL that returns TwiML for this call.
 		/// This will override any value set in the <see cref="Url"/> property.
 		/// </summary>
+		[IgnoreDataMember]
 		public Func<IDispatchCommunicationContext, Task<string?>>? UrlResolver
 		{
 			get => _extendedProperties.GetValue<Func<IDispatchCommunicationContext, Task<string?>>>(ProviderKey, nameof(UrlResolver));
@@ -113,10 +117,129 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 		/// Called upon dispatch of message for storage prior to Twilio retrieval. 
 		/// <para><seealso cref="UrlResolver"/> or <seealso cref="Url"/></para>
 		/// </summary>
+		[IgnoreDataMember]
 		public Func<IVoice, IDispatchCommunicationContext, Task>? OnStoreMessageForRetrievalAsync
 		{
 			get => _extendedProperties.GetValue<Func<IVoice, IDispatchCommunicationContext, Task>?>(ProviderKey, nameof(OnStoreMessageForRetrievalAsync));
 			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(OnStoreMessageForRetrievalAsync), value);
+		}
+
+		AttributeCollection ICustomTypeDescriptor.GetAttributes()
+		{
+			return [];
+		}
+
+		string? ICustomTypeDescriptor.GetClassName()
+		{
+			return nameof(ExtendedVoiceChannelProperties);
+		}
+
+		string? ICustomTypeDescriptor.GetComponentName()
+		{
+			return nameof(ExtendedVoiceChannelProperties);
+		}
+
+		TypeConverter ICustomTypeDescriptor.GetConverter()
+		{
+			return TypeDescriptor.GetConverter(typeof(ExtendedVoiceChannelProperties));
+		}
+
+		EventDescriptor? ICustomTypeDescriptor.GetDefaultEvent()
+		{
+			return null;
+		}
+
+		PropertyDescriptor? ICustomTypeDescriptor.GetDefaultProperty()
+		{
+			return null;
+		}
+
+		object? ICustomTypeDescriptor.GetEditor(Type editorBaseType)
+		{
+			return null;
+		}
+
+		EventDescriptorCollection ICustomTypeDescriptor.GetEvents()
+		{
+			return new EventDescriptorCollection([]);
+		}
+
+		EventDescriptorCollection ICustomTypeDescriptor.GetEvents(Attribute[]? attributes)
+		{
+			return new EventDescriptorCollection([]);
+		}
+
+		PropertyDescriptorCollection ICustomTypeDescriptor.GetProperties()
+		{
+			return GetProperties();
+		}
+
+		PropertyDescriptorCollection ICustomTypeDescriptor.GetProperties(Attribute[]? attributes)
+		{
+			return GetProperties();
+		}
+
+		private PropertyDescriptorCollection GetProperties()
+		{
+			var props = typeof(ExtendedVoiceChannelProperties).GetProperties().Where(x => x.GetCustomAttributes(typeof(IgnoreDataMemberAttribute), false).Any());
+			var descriptors = props.Select(s => (PropertyDescriptor)new ExtendedVoiceChannelPropertiesPropertyDescriptor(s.Name, [])).ToArray();
+			return new PropertyDescriptorCollection(descriptors);
+		}
+
+		object? ICustomTypeDescriptor.GetPropertyOwner(PropertyDescriptor? pd)
+		{
+			return this;
+		}
+	}
+
+	public class ExtendedVoiceChannelPropertiesPropertyDescriptor : PropertyDescriptor
+	{
+
+		public ExtendedVoiceChannelPropertiesPropertyDescriptor(
+
+				 string name,
+				 Attribute[] attrs) : base(name, attrs)
+		{
+		}
+
+		public override Type ComponentType
+		{
+			get { return typeof(ExtendedVoiceChannelProperties); }
+		}
+
+		public override bool IsReadOnly
+		{
+			get { return false; }
+		}
+
+		public override Type PropertyType
+		{
+			get { return typeof(string); }
+		}
+
+		public override bool CanResetValue(object component)
+		{
+			return GetValue(component).Equals("");
+		}
+
+		public override void ResetValue(object component)
+		{
+			SetValue(component, "");
+		}
+
+		public override bool ShouldSerializeValue(object component)
+		{
+			return false;
+		}
+
+		public override object GetValue(object component)
+		{
+			return null;
+		}
+
+		public override void SetValue(object component, object value)
+		{
+
 		}
 	}
 }
