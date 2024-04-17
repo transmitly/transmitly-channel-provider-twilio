@@ -13,15 +13,10 @@
 //  limitations under the License.
 
 using System;
-using System.IO;
-using System.Text;
-using System.Xml.Linq;
-using System.Xml;
-using Transmitly.ChannelProvider.Twilio;
-using Transmitly.ChannelProvider.Twilio.Sms;
-using Transmitly.ChannelProvider.Twilio.Voice;
+using Transmitly.ChannelProvider.TwilioClient;
+using Transmitly.ChannelProvider.TwilioClient.Sms;
+using Transmitly.ChannelProvider.TwilioClient.Voice;
 using Transmitly.Delivery;
-using TW=Twilio;
 
 namespace Transmitly
 {
@@ -81,24 +76,11 @@ namespace Transmitly
 			var opts = new TwilioClientOptions();
 			options(opts);
 
-			TW.TwilioClient.Init(opts.AccountSid, opts.AuthToken);
-
-			builder.AddChannelProvider<TwilioSmsChannelProviderClient, ISms>(Id.ChannelProvider.Twilio(providerId), Id.Channel.Sms());
-			builder.AddChannelProvider<TwilioVoiceChannelProviderClient, IVoice>(Id.ChannelProvider.Twilio(providerId), Id.Channel.Voice());
+			builder.AddChannelProvider<TwilioSmsChannelProviderClient, ISms>(Id.ChannelProvider.Twilio(providerId), opts, Id.Channel.Sms());
+			builder.AddChannelProvider<TwilioVoiceChannelProviderClient, IVoice>(Id.ChannelProvider.Twilio(providerId), opts, Id.Channel.Voice());
 			builder.ChannelProvider.AddDeliveryReportRequestAdaptor<SmsDeliveryStatusReportAdaptor>();
 			builder.ChannelProvider.AddDeliveryReportRequestAdaptor<VoiceDeliveryStatusReportAdaptor>();
 			return builder;
-		}
-
-		public static string ToTwiML(this string message)
-		{
-			MemoryStream input = new(Encoding.UTF8.GetBytes(message));
-			XmlReaderSettings xmlReaderSettings = new()
-			{
-				DtdProcessing = DtdProcessing.Prohibit
-			};
-			XmlReader reader = XmlReader.Create(input, xmlReaderSettings);
-			return XDocument.Load(reader).ToString();
 		}
 	}
 }

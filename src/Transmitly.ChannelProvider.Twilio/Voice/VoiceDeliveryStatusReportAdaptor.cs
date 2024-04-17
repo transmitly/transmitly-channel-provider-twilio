@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Transmitly.Delivery;
 
-namespace Transmitly.ChannelProvider.Twilio.Voice
+namespace Transmitly.ChannelProvider.TwilioClient.Voice
 {
 	sealed class VoiceDeliveryStatusReportAdaptor : IChannelProviderDeliveryReportRequestAdaptor
 	{
@@ -35,7 +35,7 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 					Id.Channel.Voice(),
 					Id.ChannelProvider.Twilio(),
 					adaptorContext.PipelineName,
-					voiceReport.MessageSid,
+					voiceReport.CallSid,
 					Util.ToDispatchStatus(voiceReport.MessageStatus),
 					null,
 					null,

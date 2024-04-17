@@ -15,7 +15,7 @@
 using System;
 using Transmitly.Delivery;
 
-namespace Transmitly.ChannelProvider.Twilio.Voice
+namespace Transmitly.ChannelProvider.TwilioClient.Voice
 {
 	sealed record VoiceDeliveryReport : DeliveryReport, IVoiceDeliveryReport
 	{

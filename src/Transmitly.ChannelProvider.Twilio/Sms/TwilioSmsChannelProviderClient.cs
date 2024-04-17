@@ -15,23 +15,27 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Transmitly.Delivery;
 using Twilio;
+using Twilio.Clients;
 using Twilio.Rest.Api.V2010.Account;
-using Twilio.Types;
 
-namespace Transmitly.ChannelProvider.Twilio.Sms
+namespace Transmitly.ChannelProvider.TwilioClient.Sms
 {
-	internal sealed class TwilioSmsChannelProviderClient : ChannelProviderClient<ISms>
+
+	internal sealed class TwilioSmsChannelProviderClient(TwilioClientOptions twilioClientOptions) : ChannelProviderRestClient<ISms>(null)
 	{
-		public override async Task<IReadOnlyCollection<IDispatchResult?>> DispatchAsync(ISms sms, IDispatchCommunicationContext communicationContext, CancellationToken cancellationToken)
+		private readonly TwilioClientOptions _twilioClientOptions = Guard.AgainstNull(twilioClientOptions);
+
+		protected override async Task<IReadOnlyCollection<IDispatchResult?>> DispatchAsync(HttpClient restClient, ISms sms, IDispatchCommunicationContext communicationContext, CancellationToken cancellationToken)
 		{
 			Guard.AgainstNull(sms);
 			Guard.AgainstNull(communicationContext);
 
-			var recipients = communicationContext.RecipientAudiences.SelectMany(a => a.Addresses.Select(addr => new PhoneNumber(addr.Value))).ToList();
+			var recipients = communicationContext.RecipientAudiences.SelectMany(a => a.Addresses.Select(addr => addr.Value)).ToList();
 			var smsProperties = new ExtendedSmsChannelProperties(sms.ExtendedProperties);
 			var results = new List<IDispatchResult>(recipients.Count);
 			var messageId = Guid.NewGuid().ToString("N");
@@ -40,13 +44,13 @@ namespace Transmitly.ChannelProvider.Twilio.Sms
 			{
 				Dispatch(communicationContext, sms);
 
-				var message = await MessageResource.CreateAsync(
-					recipient,
-					from: string.IsNullOrWhiteSpace(smsProperties.MessagingServiceSid) ? sms.From?.Value : null,
-					body: sms.Message,
-					messagingServiceSid: smsProperties.MessagingServiceSid,
-					statusCallback: await GetStatusCallbackUrl(messageId, smsProperties, sms, communicationContext).ConfigureAwait(false)
-				).ConfigureAwait(false);
+				var message = await MessageResource.CreateAsync(new CreateMessageOptions(recipient)
+				{
+					From = string.IsNullOrWhiteSpace(smsProperties.MessagingServiceSid) ? sms.From?.Value : null,
+					Body = sms.Message,
+					MessagingServiceSid = smsProperties.MessagingServiceSid,
+					StatusCallback = await GetStatusCallbackUrl(messageId, smsProperties, sms, communicationContext).ConfigureAwait(false)
+				}, new TwilioHttpClient(restClient, _twilioClientOptions)).ConfigureAwait(false);
 
 				var twResult = new TwilioDispatchResult(message.Sid);
 
@@ -79,9 +83,17 @@ namespace Transmitly.ChannelProvider.Twilio.Sms
 			return new Uri(url).AddPipelineContext(messageId, context.PipelineName, context.ChannelId, context.ChannelProviderId);
 		}
 
+		protected override void ConfigureHttpClient(HttpClient client)
+		{
+			RestClientConfiguration.Configure(client, _twilioClientOptions);
+			base.ConfigureHttpClient(client);
+		}
+
 		private static bool IsDispatched(MessageResource resource)
 		{
 			return resource.Status != MessageResource.StatusEnum.Failed && resource.Status != MessageResource.StatusEnum.Undelivered;
 		}
+
+
 	}
 }

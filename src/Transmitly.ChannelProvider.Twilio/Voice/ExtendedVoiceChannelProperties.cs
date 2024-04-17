@@ -17,11 +17,10 @@ using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
-using Twilio.Http;
 
-namespace Transmitly.ChannelProvider.Twilio.Voice
+namespace Transmitly.ChannelProvider.TwilioClient.Voice
 {
-	public sealed class ExtendedVoiceChannelProperties : ICustomTypeDescriptor
+	public sealed class ExtendedVoiceChannelProperties : ICustomTypeDescriptor, ISerializable
 	{
 		private readonly IExtendedProperties _extendedProperties;
 		private const string ProviderKey = Constant.VoicePropertiesKey;
@@ -189,6 +188,11 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 		object? ICustomTypeDescriptor.GetPropertyOwner(PropertyDescriptor? pd)
 		{
 			return this;
+		}
+
+		void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
+		{
+			throw new NotImplementedException();
 		}
 	}
 

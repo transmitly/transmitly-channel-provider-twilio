@@ -14,9 +14,8 @@
 
 using System;
 using System.Threading.Tasks;
-using Twilio.Http;
 
-namespace Transmitly.ChannelProvider.Twilio.Sms
+namespace Transmitly.ChannelProvider.TwilioClient.Sms
 {
 	/// <summary>
 	/// Twilio specific SMS channel properties 

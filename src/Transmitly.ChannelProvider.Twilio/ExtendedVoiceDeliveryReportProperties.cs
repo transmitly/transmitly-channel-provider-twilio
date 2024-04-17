@@ -13,7 +13,7 @@
 //  limitations under the License.
 
 using System;
-using Transmitly.ChannelProvider.Twilio.Voice;
+using Transmitly.ChannelProvider.TwilioClient.Voice;
 using Transmitly.Delivery;
 
 namespace Transmitly

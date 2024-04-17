@@ -12,11 +12,42 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-namespace Transmitly.ChannelProvider.Twilio
+using System.Net;
+
+namespace Transmitly.ChannelProvider.TwilioClient
 {
 	public sealed class TwilioClientOptions
 	{
+		internal TwilioClientOptions()
+		{
+
+		}
+		private readonly string _userAgent = GetUserAgent();
 		public string? AccountSid { get; set; }
 		public string? AuthToken { get; set; }
+		public IWebProxy? WebProxy { get; set; }
+		public string Edge { get; set; } = "ashburn";
+		public string Region { get; set; } = "us1";
+
+		public string UserAgent => _userAgent;
+
+		private static string GetUserAgent()
+		{
+			string? version = null;
+			try
+			{
+				version = typeof(TwilioClientOptions).Assembly.GetName().Version?.ToString();
+			}
+			catch
+			{
+				//eat error
+
+			}
+
+			if (string.IsNullOrWhiteSpace(version))
+				version = "0.1.0";
+
+			return $"transmitly-twilio/{version}";
+		}
 	}
 }

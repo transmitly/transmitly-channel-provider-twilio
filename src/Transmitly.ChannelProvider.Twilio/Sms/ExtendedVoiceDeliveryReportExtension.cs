@@ -12,11 +12,11 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-namespace Transmitly.ChannelProvider.Twilio.Sms
+namespace Transmitly.ChannelProvider.TwilioClient.Sms
 {
 	internal static class ExtendedSmsDeliveryReportExtension
 	{
-		public static SmsDeliveryReport ApplyExtendedProperties(this SmsDeliveryReport voiceDeliveryReport, Transmitly.ChannelProvider.Twilio.StatusReport report)
+		public static SmsDeliveryReport ApplyExtendedProperties(this SmsDeliveryReport voiceDeliveryReport, Transmitly.ChannelProvider.TwilioClient.StatusReport report)
 		{
 			_ = new ExtendedSmsDeliveryReportProperties(voiceDeliveryReport)
 			{

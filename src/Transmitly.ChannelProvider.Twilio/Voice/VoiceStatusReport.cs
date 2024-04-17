@@ -15,7 +15,7 @@
 using System;
 using Transmitly.Delivery;
 
-namespace Transmitly.ChannelProvider.Twilio.Voice
+namespace Transmitly.ChannelProvider.TwilioClient.Voice
 {
 	sealed class VoiceStatusReport : StatusReport
 	{
@@ -31,7 +31,10 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 				MessageStatus = callStatus;
 			}
 
+			CallSid = adaptorContext.GetValue("CallSid");
+
 		}
+		public string? CallSid { get; }
 		public MessageStatus CallStatus { get; }
 		public TimeSpan Duration { get; } = TimeSpan.Zero;
 		public TimeSpan CallDuration { get; } = TimeSpan.Zero;

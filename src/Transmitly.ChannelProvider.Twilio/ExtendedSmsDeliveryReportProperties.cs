@@ -12,8 +12,8 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-using Transmitly.ChannelProvider.Twilio;
-using Transmitly.ChannelProvider.Twilio.Sms;
+using Transmitly.ChannelProvider.TwilioClient;
+using Transmitly.ChannelProvider.TwilioClient.Sms;
 using Transmitly.Delivery;
 
 namespace Transmitly

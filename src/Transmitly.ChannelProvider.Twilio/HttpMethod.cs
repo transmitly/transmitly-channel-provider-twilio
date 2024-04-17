@@ -12,14 +12,11 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-using System;
-
 namespace Transmitly.ChannelProvider.TwilioClient
 {
-	public sealed class TwilioException : Exception
+	public enum HttpMethod
 	{
-		internal TwilioException(string message) : base(message)
-		{
-		}
+		GET,
+		POST
 	}
 }

@@ -12,7 +12,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-namespace Transmitly.ChannelProvider.Twilio
+namespace Transmitly.ChannelProvider.TwilioClient
 {
 	internal static class Util
 	{
@@ -34,6 +34,7 @@ namespace Transmitly.ChannelProvider.Twilio
 				case MessageStatus.delivered:
 				case MessageStatus.read:
 				case MessageStatus.partially_delivered:
+				case MessageStatus.completed:
 					return DispatchStatus.Delivered;
 				case MessageStatus.canceled:
 					return DispatchStatus.Expired;

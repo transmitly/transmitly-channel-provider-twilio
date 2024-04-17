@@ -14,11 +14,11 @@
 
 using System;
 
-namespace Transmitly.ChannelProvider.Twilio
+namespace Transmitly.ChannelProvider.TwilioClient
 {
 	sealed class TwilioDispatchResult(string sid) : IDispatchResult
 	{
-		public string? ResourceId { get; } = sid;
+		public string? ResourceId { get; } = Guard.AgainstNullOrWhiteSpace(sid);
 
 		public DispatchStatus DispatchStatus => DispatchStatus.Dispatched;
 

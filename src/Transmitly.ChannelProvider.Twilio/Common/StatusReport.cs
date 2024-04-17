@@ -15,7 +15,7 @@
 using System;
 using Transmitly.Delivery;
 
-namespace Transmitly.ChannelProvider.Twilio
+namespace Transmitly.ChannelProvider.TwilioClient
 {
 	internal class StatusReport
 	{

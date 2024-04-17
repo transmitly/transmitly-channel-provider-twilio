@@ -13,13 +13,27 @@
 //  limitations under the License.
 
 using System;
+using System.Net.Http;
+using System.Net.Http.Headers;
 
-namespace Transmitly.ChannelProvider.TwilioClient
+namespace Transmitly.ChannelProvider.TwilioClient.Sms
 {
-	public sealed class TwilioException : Exception
+	internal static class RestClientConfiguration
 	{
-		internal TwilioException(string message) : base(message)
+		public static void Configure(HttpClient httpClient, TwilioClientOptions channelProviderConfiguration)
 		{
+			Guard.AgainstNull(httpClient);
+			Guard.AgainstNull(channelProviderConfiguration);
+
+			if (channelProviderConfiguration.WebProxy != null)
+			{
+				httpClient = new(new HttpClientHandler
+				{
+					Proxy = channelProviderConfiguration.WebProxy
+				});
+			}
+
+			httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(channelProviderConfiguration.UserAgent);
 		}
 	}
 }

@@ -17,14 +17,19 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+using Transmitly.ChannelProvider.TwilioClient.Sms;
 using Transmitly.Delivery;
-using TW = Twilio.Rest.Api.V2010.Account;
-using TWT =Twilio.Types;
+using Twilio.Rest.Api.V2010.Account;
+using Twilio.TwiML;
+using Twilio.Types;
 
-namespace Transmitly.ChannelProvider.Twilio.Voice
+
+namespace Transmitly.ChannelProvider.TwilioClient.Voice
 {
-	internal sealed class TwilioVoiceChannelProviderClient : ChannelProviderClient<IVoice>
+	internal sealed class TwilioVoiceChannelProviderClient(TwilioClientOptions twilioClientOptions) : ChannelProviderRestClient<IVoice>(null)
 	{
+		private readonly TwilioClientOptions _twilioClientOptions = twilioClientOptions;
+
 		/// <summary>
 		/// Dispatches a Voice communication using Twilio.
 		/// </summary>
@@ -32,12 +37,12 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 		/// <param name="communicationContext">Context of the dispatch.</param>
 		/// <param name="cancellationToken">Cancellation token</param>
 		/// <returns>Result of the dispatch.</returns>
-		public override async Task<IReadOnlyCollection<IDispatchResult?>> DispatchAsync(IVoice voice, IDispatchCommunicationContext communicationContext, CancellationToken cancellationToken)
+		protected override async Task<IReadOnlyCollection<IDispatchResult?>> DispatchAsync(System.Net.Http.HttpClient restClient, IVoice voice, IDispatchCommunicationContext communicationContext, CancellationToken cancellationToken)
 		{
 			var voiceProperties = new ExtendedVoiceChannelProperties(voice.ExtendedProperties);
-			var recipients = communicationContext.RecipientAudiences.SelectMany(a => a.Addresses.Select(addr => new TWT.PhoneNumber(addr.Value))).ToList();
+			var recipients = communicationContext.RecipientAudiences.SelectMany(a => a.Addresses.Select(addr => new PhoneNumber(addr.Value))).ToList();
 			var results = new List<IDispatchResult>(recipients.Count);
-			var from = new TWT.PhoneNumber(Guard.AgainstNull(voice.From).Value);
+			var from = new PhoneNumber(Guard.AgainstNull(voice.From).Value);
 
 			foreach (var recipient in recipients)
 			{
@@ -46,15 +51,34 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 				if (voiceProperties.OnStoreMessageForRetrievalAsync != null)
 					_ = Task.Run(() => voiceProperties.OnStoreMessageForRetrievalAsync(voice, communicationContext).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
 
-				var resource = await TW.CallResource.CreateAsync(
-					to: recipient,
-					from: from,
-					url: await GetTwiMLCallbackUrl(voiceProperties, communicationContext).ConfigureAwait(false),
-					timeout: voiceProperties.Timeout,
-					statusCallback: await GetStatusCallbackUrl(voiceProperties, voice, communicationContext).ConfigureAwait(false),
-					statusCallbackMethod: voiceProperties.StatusCallbackMethod,
-					machineDetection: ConvertMachineDetection(voice.MachineDetection, voiceProperties.MachineDetection)
-				).ConfigureAwait(false);
+				var url = await GetTwiMLCallbackUrl(voiceProperties, communicationContext).ConfigureAwait(false);
+				string? body = new VoiceResponse().Say(voice.Message).ToString();
+
+				if (body.Length > 4000)
+				{
+					if (url == null)
+						throw new TwilioException("Body is > 4000 characters. Url is required.");
+					body = null;
+				}
+				else if(body.Length< 4000 && string.IsNullOrWhiteSpace(body))
+				{
+					url = null;
+				}
+				else if(string.IsNullOrWhiteSpace(body) && url == null)
+				{
+					throw new TwilioException("You must specify a Message or a Url.");
+				}
+
+				var resource = await CallResource.CreateAsync(new CreateCallOptions(recipient, from)
+				{
+					Url = url,
+					Method = "POST",
+					Twiml = body,
+					Timeout = voiceProperties.Timeout,
+					StatusCallback = await GetStatusCallbackUrl(voiceProperties, voice, communicationContext).ConfigureAwait(false),
+					StatusCallbackMethod = ConvertHttpMethod(voiceProperties.StatusCallbackMethod),
+					MachineDetection = ConvertMachineDetection(voice.MachineDetection, voiceProperties.MachineDetection)
+				}, new TwilioHttpClient(restClient, _twilioClientOptions)).ConfigureAwait(false);
 
 				var twResult = new TwilioDispatchResult(resource.Sid);
 				results.Add(twResult);
@@ -68,11 +92,22 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 			return results;
 		}
 
-		private static bool IsDispatched(TW.CallResource resource)
+		private static bool IsDispatched(CallResource resource)
 		{
-			return resource.Status != TW.CallResource.StatusEnum.Failed && resource.Status != TW.CallResource.StatusEnum.Canceled;
+			return resource.Status != CallResource.StatusEnum.Failed && resource.Status != CallResource.StatusEnum.Canceled;
 		}
-
+		private static Twilio.Http.HttpMethod? ConvertHttpMethod(HttpMethod? httpMethod)
+		{
+			switch (httpMethod)
+			{
+				case HttpMethod.GET:
+					return Twilio.Http.HttpMethod.Get;
+				case HttpMethod.POST:
+					return Twilio.Http.HttpMethod.Post;
+				default:
+					return null;
+			}
+		}
 		private static string? ConvertMachineDetection(Transmitly.MachineDetection tlyValue, MachineDetection? twilioSpecificValue)
 		{
 			MachineDetection? value;
@@ -97,12 +132,12 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 			return Enum.GetName(typeof(MachineDetection), value);
 		}
 
-		private static async Task<Uri> GetTwiMLCallbackUrl(ExtendedVoiceChannelProperties voiceProperties, IDispatchCommunicationContext context)
+		private static async Task<Uri?> GetTwiMLCallbackUrl(ExtendedVoiceChannelProperties voiceProperties, IDispatchCommunicationContext context)
 		{
-			const string RequiredUrlExceptionMessage = $"Twilio requires a url that returns TwiML when called. Ensure you have a value set for the Twilio extended property: '{nameof(voiceProperties.Url)}' OR '{nameof(voiceProperties.UrlResolver)}'.";
+			//const string RequiredUrlExceptionMessage = $"Twilio requires a url that returns TwiML when called. Ensure you have a value set for the Twilio extended property: '{nameof(voiceProperties.Url)}' OR '{nameof(voiceProperties.UrlResolver)}'.";
 
-			if (string.IsNullOrWhiteSpace(voiceProperties.Url) && voiceProperties.UrlResolver == null)
-				throw new TwilioException(RequiredUrlExceptionMessage);
+			//if (string.IsNullOrWhiteSpace(voiceProperties.Url) && voiceProperties.UrlResolver == null)
+			//	throw new TwilioException(RequiredUrlExceptionMessage);
 
 			string? url = voiceProperties.Url;
 
@@ -110,7 +145,8 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 				url = await voiceProperties.UrlResolver(context).ConfigureAwait(false);
 
 			if (string.IsNullOrWhiteSpace(url))
-				throw new TwilioException(RequiredUrlExceptionMessage);
+				return null;
+			//throw new TwilioException(RequiredUrlExceptionMessage);
 
 			return new Uri(url).AddPipelineContext(string.Empty, context.PipelineName, context.ChannelId, context.ChannelProviderId);
 		}
@@ -129,5 +165,12 @@ namespace Transmitly.ChannelProvider.Twilio.Voice
 
 			return new Uri(url).AddPipelineContext(string.Empty, context.PipelineName, context.ChannelId, context.ChannelProviderId);
 		}
+
+		protected override void ConfigureHttpClient(System.Net.Http.HttpClient client)
+		{
+			RestClientConfiguration.Configure(client, _twilioClientOptions);
+			base.ConfigureHttpClient(client);
+		}
+
 	}
 }

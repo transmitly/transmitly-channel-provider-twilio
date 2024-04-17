@@ -14,7 +14,7 @@
 
 using System;
 
-namespace Transmitly.ChannelProvider.Twilio
+namespace Transmitly.ChannelProvider.TwilioClient
 {
 	/// <summary>
 	/// A Message resource's <see cref="StatusReport.MessageStatus">Status</see>

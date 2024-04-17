@@ -12,7 +12,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-namespace Transmitly.ChannelProvider.Twilio.Voice
+namespace Transmitly.ChannelProvider.TwilioClient.Voice
 {
 	public enum MachineDetection
 	{

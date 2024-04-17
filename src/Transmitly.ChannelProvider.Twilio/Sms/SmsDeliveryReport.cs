@@ -15,7 +15,7 @@
 using System;
 using Transmitly.Delivery;
 
-namespace Transmitly.ChannelProvider.Twilio.Sms
+namespace Transmitly.ChannelProvider.TwilioClient.Sms
 {
 	sealed record SmsDeliveryReport : DeliveryReport, ISmsDeliveryReport
 	{
