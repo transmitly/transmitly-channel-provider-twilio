@@ -22,8 +22,10 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 			{
 				To = report.To,
 				From = report.From,
-				NumMedia = report.NumMedia
+				AccountSid = report.AccountSid,
+				ApiVersion = report.ApiVersion
 			};
+
 			return voiceDeliveryReport;
 		}
 	}

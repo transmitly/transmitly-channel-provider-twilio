@@ -36,7 +36,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Voice
 					Id.ChannelProvider.Twilio(),
 					adaptorContext.PipelineName,
 					voiceReport.CallSid,
-					Util.ToDispatchStatus(voiceReport.MessageStatus),
+					DispatchStatus.Delivered,//todo
 					null,
 					null,
 					null

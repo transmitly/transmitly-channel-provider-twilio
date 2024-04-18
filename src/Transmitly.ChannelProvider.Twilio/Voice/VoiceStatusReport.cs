@@ -21,23 +21,18 @@ namespace Transmitly.ChannelProvider.TwilioClient.Voice
 	{
 		public VoiceStatusReport(IRequestAdaptorContext adaptorContext) : base(adaptorContext)
 		{
-			if (int.TryParse(adaptorContext.GetValue("Duration"), out var duration))
-				Duration = TimeSpan.FromSeconds(duration);
-			if (int.TryParse(adaptorContext.GetValue("CallDuration"), out var callDuration))
-				CallDuration = TimeSpan.FromSeconds(callDuration);
-			if (Enum.TryParse<MessageStatus>(adaptorContext.GetValue("CallStatus"), out var callStatus))
-			{
-				CallStatus = callStatus;
-				MessageStatus = callStatus;
-			}
-
 			CallSid = adaptorContext.GetValue("CallSid");
-
+			CallToken = adaptorContext.GetValue("CallToken");
+			CallStatus = adaptorContext.GetValue("CallStatus");
+			if (int.TryParse(adaptorContext.GetValue("CallDuration"), out var duration))
+				Duration = TimeSpan.FromSeconds(duration);
+			if (DateTimeOffset.TryParse(adaptorContext.GetValue("Timestamp"), out var timestamp))
+				Timestamp = timestamp;
 		}
 		public string? CallSid { get; }
-		public MessageStatus CallStatus { get; }
-		public TimeSpan Duration { get; } = TimeSpan.Zero;
-		public TimeSpan CallDuration { get; } = TimeSpan.Zero;
-		public string? CalledCountry { get; }
+		public string? CallToken { get; }
+		public TimeSpan? Duration { get; }
+		public string? CallStatus { get; }
+		public DateTimeOffset? Timestamp { get; }
 	}
 }

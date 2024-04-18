@@ -16,6 +16,7 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Transmitly.ChannelProvider.TwilioClient.Voice
@@ -116,10 +117,11 @@ namespace Transmitly.ChannelProvider.TwilioClient.Voice
 		/// Called upon dispatch of message for storage prior to Twilio retrieval. 
 		/// <para><seealso cref="UrlResolver"/> or <seealso cref="Url"/></para>
 		/// </summary>
-		[IgnoreDataMember]
-		public Func<IVoice, IDispatchCommunicationContext, Task>? OnStoreMessageForRetrievalAsync
+		[System.Text.Json.Serialization.JsonIgnore]
+		[Newtonsoft.Json.JsonIgnore]
+		public Func<string, IVoice, IDispatchCommunicationContext, Task>? OnStoreMessageForRetrievalAsync
 		{
-			get => _extendedProperties.GetValue<Func<IVoice, IDispatchCommunicationContext, Task>?>(ProviderKey, nameof(OnStoreMessageForRetrievalAsync));
+			get => _extendedProperties.GetValue<Func<string, IVoice, IDispatchCommunicationContext, Task>?>(ProviderKey, nameof(OnStoreMessageForRetrievalAsync));
 			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(OnStoreMessageForRetrievalAsync), value);
 		}
 

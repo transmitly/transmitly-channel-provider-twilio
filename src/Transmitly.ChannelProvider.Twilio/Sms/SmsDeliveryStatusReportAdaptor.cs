@@ -14,8 +14,6 @@
 
 using System;
 using System.Collections.Generic;
-using System.Text.Json;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using Transmitly.Delivery;
 
@@ -23,7 +21,6 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 {
 	sealed class SmsDeliveryStatusReportAdaptor : IChannelProviderDeliveryReportRequestAdaptor
 	{
-		//todo: request validation, idempotent id
 		//https://www.twilio.com/docs/usage/webhooks/webhooks-security
 		public Task<IReadOnlyCollection<DeliveryReport>?> AdaptAsync(IRequestAdaptorContext adaptorContext)
 		{
@@ -31,19 +28,19 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 				return Task.FromResult<IReadOnlyCollection<DeliveryReport>?>(null);
 
 			var smsReport = new StatusReport(adaptorContext);
-			
+
 			var ret = new SmsDeliveryReport(
 					DeliveryReport.Event.StatusChanged(),
 					Id.Channel.Sms(),
 					Id.ChannelProvider.Twilio(),
 					adaptorContext.PipelineName,
-					smsReport.MessageSid,
-					Util.ToDispatchStatus(smsReport.MessageStatus),
+					null,//todo
+					DispatchStatus.Delivered,//todo
 					null,
 					null,
 					null
 				).ApplyExtendedProperties(smsReport);
-			
+
 			return Task.FromResult<IReadOnlyCollection<DeliveryReport>?>(new List<DeliveryReport>() { ret }.AsReadOnly());
 		}
 

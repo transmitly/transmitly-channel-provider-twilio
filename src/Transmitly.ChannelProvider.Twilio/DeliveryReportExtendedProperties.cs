@@ -16,27 +16,19 @@ using Transmitly.Delivery;
 
 namespace Transmitly
 {
+	/// <summary>
+	/// Extend delivery properties for available channels.
+	/// </summary>
+	/// <param name="deliveryReport">Delivery report.</param>
 	public sealed class DeliveryReportExtendedProperties(DeliveryReport deliveryReport)
 	{
+		/// <summary>
+		/// Gets SMS extended properties for the delivery report.
+		/// </summary>
 		public ExtendedSmsDeliveryReportProperties Sms { get; } = new ExtendedSmsDeliveryReportProperties(deliveryReport);
+		/// <summary>
+		/// Gets Voice extended properties for the delviery report.
+		/// </summary>
 		public ExtendedVoiceDeliveryReportProperties Voice { get; } = new ExtendedVoiceDeliveryReportProperties(deliveryReport);
-
-		///// <summary>
-		///// Indicates whether the message is successfully sent, not sent, delivered, not delivered, waiting for delivery or any other possible status.
-		///// <see href="https://dev.infobip.com/getting-started/response-status-and-error-codes#status-object-example">Response status and error codes</see>
-		///// </summary>
-		//public CallbackStatus? Status
-		//{
-		//	get => Sms.Status ?? Voice.Status;
-		//}
-
-		///// <summary>
-		///// Indicates whether the error occurred during the query execution.
-		///// <see href="https://dev.infobip.com/getting-started/response-status-and-error-codes#status-object-example">Response status and error codes</see>
-		///// </summary>
-		//public ErrorStatus? Error
-		//{
-		//	get => Sms.Error ?? Voice.Error;
-		//}
 	}
 }

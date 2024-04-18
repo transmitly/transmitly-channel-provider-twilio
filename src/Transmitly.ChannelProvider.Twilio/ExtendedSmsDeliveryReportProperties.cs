@@ -36,7 +36,8 @@ namespace Transmitly
 		{
 			To = report.To;
 			From = report.From;
-			NumMedia =  report.NumMedia;
+			ApiVersion = report.ApiVersion;
+			AccountSid = report.AccountSid;
 		}
 
 		public string? From
@@ -51,11 +52,20 @@ namespace Transmitly
 			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(To), value);
 		}
 
-		public int? NumMedia
+
+		public string? ApiVersion
 		{
-			get => _extendedProperties.GetValue<int?>(ProviderKey, nameof(NumMedia));
-			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(NumMedia), value);
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(ApiVersion));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(ApiVersion), value);
 		}
 
+		/// <summary>
+		/// Your Twilio account ID. It is 34 characters long, and always starts with the letters AC.
+		/// </summary>
+		public string? AccountSid
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(AccountSid));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(AccountSid), value);
+		}
 	}
 }

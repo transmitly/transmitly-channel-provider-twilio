@@ -12,20 +12,24 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-using Transmitly.ChannelProvider.TwilioClient;
 using Transmitly.ChannelProvider.TwilioClient.Voice;
 
 namespace Transmitly
 {
 	internal static class ExtendedVoiceDeliveryReportExtension
 	{
-		public static VoiceDeliveryReport ApplyExtendedProperties(this VoiceDeliveryReport voiceDeliveryReport, StatusReport report)
+		public static VoiceDeliveryReport ApplyExtendedProperties(this VoiceDeliveryReport voiceDeliveryReport, VoiceStatusReport report)
 		{
 			_ = new ExtendedVoiceDeliveryReportProperties(voiceDeliveryReport)
 			{
 				To = report.To,
 				From = report.From,
-				NumMedia = report.NumMedia
+				AccountSid = report.AccountSid,
+				ApiVersion = report.ApiVersion,
+				CallSid = report.CallSid,
+				Duration = report.Duration,
+				Timestamp = report.Timestamp,
+				CallToken = report.CallToken
 			};
 			return voiceDeliveryReport;
 		}

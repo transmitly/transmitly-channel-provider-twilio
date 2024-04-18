@@ -27,15 +27,12 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 				string? ResourceId, DispatchStatus DispatchStatus, object? ChannelCommunication, IContentModel? ContentModel, Exception? Exception)
 			: base(EventName, ChannelId, ChannelProviderId, PipelineName, ResourceId, DispatchStatus, ChannelCommunication, ContentModel, Exception)
 		{
-			//var twilioException = this.Twilio().Voice.Error;
-			//if (twilioException != null && Exception == null)
-			//	base.Exception = new TwilioException(twilioException);
 		}
 
 		public string? To => this.Twilio().Sms.To;
 
 		public string? From => this.Twilio().Sms.From;
 
-		public int? Count => this.Twilio().Sms.NumMedia;
+		public int? Count => throw new NotImplementedException();
 	}
 }
