@@ -38,7 +38,6 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 			var recipients = communicationContext.RecipientAudiences.SelectMany(a => a.Addresses.Select(addr => addr.Value)).ToList();
 			var smsProperties = new ExtendedSmsChannelProperties(sms.ExtendedProperties);
 			var results = new List<IDispatchResult>(recipients.Count);
-			var messageId = Guid.NewGuid().ToString("N");
 
 			foreach (var recipient in recipients)
 			{
@@ -49,7 +48,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 					From = string.IsNullOrWhiteSpace(smsProperties.MessagingServiceSid) ? sms.From?.Value : null,
 					Body = sms.Message,
 					MessagingServiceSid = smsProperties.MessagingServiceSid,
-					StatusCallback = await GetStatusCallbackUrl(messageId, smsProperties, sms, communicationContext).ConfigureAwait(false)
+					StatusCallback = await GetStatusCallbackUrl(smsProperties, sms, communicationContext).ConfigureAwait(false)
 				}, new TwilioHttpClient(restClient, _twilioClientOptions)).ConfigureAwait(false);
 
 				var twResult = new TwilioDispatchResult(message.Sid);
@@ -64,7 +63,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 			return results;
 		}
 
-		private static async Task<Uri?> GetStatusCallbackUrl(string messageId, ExtendedSmsChannelProperties smsProperties, ISms sms, IDispatchCommunicationContext context)
+		private static async Task<Uri?> GetStatusCallbackUrl(ExtendedSmsChannelProperties smsProperties, ISms sms, IDispatchCommunicationContext context)
 		{
 			string? url = smsProperties.StatusCallbackUrl ?? sms.DeliveryReportCallbackUrl;
 
@@ -80,7 +79,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 			if (string.IsNullOrWhiteSpace(url))
 				return null;
 
-			return new Uri(url).AddPipelineContext(messageId, context.PipelineName, context.ChannelId, context.ChannelProviderId);
+			return new Uri(url).AddPipelineContext(string.Empty, context.PipelineName, context.ChannelId, context.ChannelProviderId);
 		}
 
 		protected override void ConfigureHttpClient(HttpClient client)

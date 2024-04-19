@@ -45,7 +45,7 @@ namespace Transmitly
 			SmsStatus = report.SmsStatus;
 			SmsSid = report.SmsSid;
 			MessageSid = report.MessageSid;
-
+			ErrorCode = report.ErrorCode;
 		}
 
 		public string? From
@@ -111,6 +111,12 @@ namespace Transmitly
 		{
 			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(MessageSid));
 			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(MessageSid), value);
+		}
+
+		public string? ErrorCode
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(ErrorCode));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(ErrorCode), value);
 		}
 	}
 }

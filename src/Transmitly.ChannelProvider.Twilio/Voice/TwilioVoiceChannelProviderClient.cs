@@ -62,7 +62,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Voice
 				}, new TwilioHttpClient(restClient, _twilioClientOptions)).ConfigureAwait(false);
 
 				var twResult = new TwilioDispatchResult(resource.Sid);
-				
+
 				results.Add(twResult);
 
 				if (IsDispatched(resource))
@@ -97,7 +97,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Voice
 
 			if (url != null && voiceProperties.OnStoreMessageForRetrievalAsync != null)
 				_ = Task.Run(() => voiceProperties.OnStoreMessageForRetrievalAsync(messageNeededId, voice, communicationContext).ConfigureAwait(false), cancellationToken).ConfigureAwait(false);
-			
+
 			return (twiml, url);
 		}
 

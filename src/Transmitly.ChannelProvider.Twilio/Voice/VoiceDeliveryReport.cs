@@ -33,6 +33,6 @@ namespace Transmitly.ChannelProvider.TwilioClient.Voice
 
 		public string? From => this.Twilio().Voice.From;
 
-		public TimeSpan Duration => TimeSpan.Zero;
+		public TimeSpan? Duration => this.Twilio().Voice.CallDuration ?? this.Twilio().Voice.Duration;
 	}
 }

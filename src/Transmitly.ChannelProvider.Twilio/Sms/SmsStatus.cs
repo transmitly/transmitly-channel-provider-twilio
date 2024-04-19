@@ -11,38 +11,38 @@
 //  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
-
-using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace Transmitly.ChannelProvider.TwilioClient.Sms
 {
 	public enum SmsStatus
 	{
-		[JsonProperty("queued")]
+		Unknown,
+		[EnumMember(Value = "queued")]
 		Queued,
-		[JsonProperty("sending")]
+		[EnumMember(Value = "sending")]
 		Sending,
-		[JsonProperty("sent")]
+		[EnumMember(Value = "sent")]
 		Sent,
-		[JsonProperty("failed")]
+		[EnumMember(Value = "failed")]
 		Failed,
-		[JsonProperty("delivered")]
+		[EnumMember(Value = "delivered")]
 		Delivered,
-		[JsonProperty("undelivered")]
+		[EnumMember(Value = "undelivered")]
 		Undelivered,
-		[JsonProperty("receiving")]
+		[EnumMember(Value = "receiving")]
 		Receiving,
-		[JsonProperty("received")]
+		[EnumMember(Value = "received")]
 		Received,
-		[JsonProperty("accepted")]
+		[EnumMember(Value = "accepted")]
 		Accepted,
-		[JsonProperty("scheduled")]
+		[EnumMember(Value = "scheduled")]
 		Scheduled,
-		[JsonProperty("read")]
+		[EnumMember(Value = "read")]
 		Read,
-		[JsonProperty("partially_delivered")]
+		[EnumMember(Value = "partially_delivered")]
 		PartiallyDelivered,
-		[JsonProperty("canceled")]
+		[EnumMember(Value = "canceled")]
 		Canceled
 	}
 }

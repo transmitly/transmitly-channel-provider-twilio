@@ -12,29 +12,34 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+using Newtonsoft.Json.Linq;
+using System;
+using System.Linq;
+using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Voice
+namespace Transmitly.ChannelProvider.TwilioClient
 {
-	/// <summary>
-	/// The direction of the call.
-	/// </summary>
-	public enum Direction
+	internal static class EnumUtil
 	{
-		/// <summary>
-		///  Inbound calls.
-		/// </summary>
-		[EnumMember(Value = "inbound")]
-		Inbound,
-		/// <summary>
-		/// Calls initiated via the REST API.
-		/// </summary>
-		[EnumMember(Value = "outbound-api")]
-		OutboundApi,
-		/// <summary>
-		/// Calls initiated by a &lt;Dial&gt; verb.
-		/// </summary>
-		[EnumMember(Value = "outbound-dial")]
-		OutboundDial
+		public static T? ToEnum<T>(string? value)
+		{
+			if(string.IsNullOrWhiteSpace(value))
+				return default;
+
+			var type = typeof(T);
+			if (type.GetTypeInfo().IsEnum)
+			{
+				foreach (var name in Enum.GetNames(type))
+				{
+					var attr = type.GetRuntimeField(name).GetCustomAttribute<EnumMemberAttribute>(true);
+					if (attr != null && attr.Value == value)
+						return (T)Enum.Parse(type, name);
+				}
+
+				return default;
+			}
+			throw new InvalidOperationException("Not Enum");
+		}
 	}
 }

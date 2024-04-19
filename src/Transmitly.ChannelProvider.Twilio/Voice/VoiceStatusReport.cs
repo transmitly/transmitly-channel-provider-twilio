@@ -17,7 +17,6 @@ using Transmitly.Delivery;
 
 namespace Transmitly.ChannelProvider.TwilioClient.Voice
 {
-
 	sealed class VoiceStatusReport : StatusReport
 	{
 		public VoiceStatusReport(IRequestAdaptorContext adaptorContext) : base(adaptorContext)
@@ -57,10 +56,12 @@ namespace Transmitly.ChannelProvider.TwilioClient.Voice
 			if (int.TryParse(adaptorContext.GetValue("CallDuration"), out var callDuration))
 				CallDuration = TimeSpan.FromSeconds(callDuration);
 
-			if (Enum.TryParse<CallStatus>(adaptorContext.GetValue("CallsStatus"), out var callStatus))
+			var callStatus = EnumUtil.ToEnum<CallStatus>(adaptorContext.GetValue("CallStatus"));
+			if (callStatus != default)
 				CallStatus = callStatus;
 
-			if (Enum.TryParse<Transmitly.ChannelProvider.TwilioClient.Voice.Direction>(adaptorContext.GetValue("Direction"), out var direction))
+			var direction = EnumUtil.ToEnum<Direction>(adaptorContext.GetValue("Direction"));
+			if (direction != default)
 				Direction = direction;
 		}
 

@@ -13,6 +13,7 @@
 //  limitations under the License.
 
 using Newtonsoft.Json;
+using System.Runtime.Serialization;
 
 namespace Transmitly
 {
@@ -21,21 +22,22 @@ namespace Transmitly
 	/// </summary>
 	public enum CallStatus
 	{
-		[JsonProperty("queued")]
+		Unknown,
+		[EnumMember(Value ="queued")]
 		Queued,
-		[JsonProperty("initiated")]
+		[EnumMember(Value = "initiated")]
 		Initiated,
-		[JsonProperty("ringing")]
+		[EnumMember(Value = "ringing")]
 		Ringing,
-		[JsonProperty("in-progress")]
+		[EnumMember(Value = "in-progress")]
 		InProgress,
-		[JsonProperty("completed")]
+		[EnumMember(Value = "completed")]
 		Completed,
-		[JsonProperty("busy")]
+		[EnumMember(Value = "busy")]
 		Busy,
-		[JsonProperty("failed")]
+		[EnumMember(Value = "failed")]
 		Failed,
-		[JsonProperty("no-answer")]
+		[EnumMember(Value = "no-answer")]
 		NoAnswer
 	}
 }

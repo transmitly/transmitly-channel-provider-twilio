@@ -21,7 +21,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Voice
 {
 	sealed class VoiceDeliveryStatusReportAdaptor : IChannelProviderDeliveryReportRequestAdaptor
 	{
-		//todo: request validation, idempotent id
+		//todo: request validation
 		//https://www.twilio.com/docs/usage/webhooks/webhooks-security
 		public Task<IReadOnlyCollection<DeliveryReport>?> AdaptAsync(IRequestAdaptorContext adaptorContext)
 		{
@@ -36,13 +36,29 @@ namespace Transmitly.ChannelProvider.TwilioClient.Voice
 					Id.ChannelProvider.Twilio(),
 					adaptorContext.PipelineName,
 					voiceReport.CallSid,
-					DispatchStatus.Delivered,//todo
+					ConvertStatus(voiceReport.CallStatus),
 					null,
 					null,
 					null
 				).ApplyExtendedProperties(voiceReport);
 
 			return Task.FromResult<IReadOnlyCollection<DeliveryReport>?>(new List<DeliveryReport>() { ret }.AsReadOnly());
+		}
+
+		private DispatchStatus ConvertStatus(CallStatus? callStatus)
+		{
+			return callStatus switch
+			{
+				CallStatus.Unknown or CallStatus.Queued =>
+					DispatchStatus.Dispatched,
+				CallStatus.Initiated or CallStatus.Ringing or CallStatus.InProgress =>
+					DispatchStatus.Pending,
+				CallStatus.Completed =>
+					DispatchStatus.Delivered,
+				CallStatus.Failed or CallStatus.Busy or CallStatus.NoAnswer =>
+					DispatchStatus.Undeliverable,
+				_ => DispatchStatus.Unknown,
+			};
 		}
 
 		private static bool ShouldAdapt(IRequestAdaptorContext adaptorContext)

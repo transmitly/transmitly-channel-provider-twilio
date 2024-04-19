@@ -14,7 +14,7 @@
 
 using System;
 using Transmitly.Delivery;
-
+using Transmitly.ChannelProvider.TwilioClient;
 namespace Transmitly.ChannelProvider.TwilioClient.Sms
 {
 	sealed class SmsStatusReport : StatusReport
@@ -26,16 +26,20 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 			SmsSid = adaptorContext.GetValue("SmsSid");
 			MessageSid = adaptorContext.GetValue("MessageSid");
 
-			if (Enum.TryParse<SmsStatus>(adaptorContext.GetValue("MessageStatus"), out var messageStatus))
+			var messageStatus = EnumUtil.ToEnum<SmsStatus>(adaptorContext.GetValue("MessageStatus"));
+			if (messageStatus != default)
 				MessageStatus = messageStatus;
 
-			if (Enum.TryParse<SmsStatus>(adaptorContext.GetValue("SmsStatus"), out var smsStatus))
+			var smsStatus = EnumUtil.ToEnum<SmsStatus>(adaptorContext.GetValue("SmsStatus"));
+			if (smsStatus != default)
 				SmsStatus = smsStatus;
+			ErrorCode = adaptorContext.GetValue("ErrorCode");
 		}
 
 		public SmsStatus? MessageStatus { get; }
 		public SmsStatus? SmsStatus { get; }
 		public string? SmsSid { get; }
 		public string? MessageSid { get; }
+		public string? ErrorCode { get; }
 	}
 }

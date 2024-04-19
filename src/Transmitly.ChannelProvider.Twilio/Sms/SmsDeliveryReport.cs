@@ -33,6 +33,6 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 
 		public string? From => this.Twilio().Sms.From;
 
-		public int? Count => throw new NotImplementedException();
+		public int? Count => null;
 	}
 }

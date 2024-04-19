@@ -30,7 +30,8 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 				MessageStatus = report.MessageStatus,
 				Signature = report.Signature,
 				SmsSid = report.SmsSid,
-				SmsStatus = report.SmsStatus
+				SmsStatus = report.SmsStatus,
+				ErrorCode = report.ErrorCode
 			};
 
 			return voiceDeliveryReport;
