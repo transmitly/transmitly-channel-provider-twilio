@@ -27,21 +27,41 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 			if (!ShouldAdapt(adaptorContext))
 				return Task.FromResult<IReadOnlyCollection<DeliveryReport>?>(null);
 
-			var smsReport = new StatusReport(adaptorContext);
+			var smsReport = new SmsStatusReport(adaptorContext);
 
 			var ret = new SmsDeliveryReport(
 					DeliveryReport.Event.StatusChanged(),
 					Id.Channel.Sms(),
 					Id.ChannelProvider.Twilio(),
 					adaptorContext.PipelineName,
-					null,//todo
-					DispatchStatus.Delivered,//todo
+					smsReport.SmsSid,
+					ConvertStatus(smsReport.SmsStatus),
 					null,
 					null,
 					null
 				).ApplyExtendedProperties(smsReport);
 
 			return Task.FromResult<IReadOnlyCollection<DeliveryReport>?>(new List<DeliveryReport>() { ret }.AsReadOnly());
+		}
+
+		private DispatchStatus ConvertStatus(SmsStatus? messageStatus)
+		{
+			return messageStatus switch
+			{
+				SmsStatus.Queued or SmsStatus.Sending or SmsStatus.Sent or SmsStatus.Receiving or SmsStatus.Accepted or SmsStatus.Scheduled =>
+					DispatchStatus.Pending,
+
+				SmsStatus.Undelivered or SmsStatus.Failed =>
+					DispatchStatus.Undeliverable,
+
+				SmsStatus.Received or SmsStatus.Delivered or SmsStatus.Read or SmsStatus.PartiallyDelivered =>
+					DispatchStatus.Delivered,
+
+				SmsStatus.Canceled =>
+					DispatchStatus.Rejected,
+
+				_ => DispatchStatus.Unknown,
+			};
 		}
 
 		private static bool ShouldAdapt(IRequestAdaptorContext adaptorContext)

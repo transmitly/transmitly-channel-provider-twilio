@@ -32,12 +32,20 @@ namespace Transmitly
 			_extendedProperties = Guard.AgainstNull(properties);
 		}
 
-		internal void Apply(StatusReport report)
+		internal void Apply(SmsStatusReport report)
 		{
 			To = report.To;
 			From = report.From;
 			ApiVersion = report.ApiVersion;
 			AccountSid = report.AccountSid;
+			IdempotencyId = report.IdempotencyId;
+			Signature = report.Signature;
+			HomeRegion = report.HomeRegion;
+			MessageStatus = report.MessageStatus;
+			SmsStatus = report.SmsStatus;
+			SmsSid = report.SmsSid;
+			MessageSid = report.MessageSid;
+
 		}
 
 		public string? From
@@ -66,6 +74,43 @@ namespace Transmitly
 		{
 			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(AccountSid));
 			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(AccountSid), value);
+		}
+
+		public string? IdempotencyId
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(IdempotencyId));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(IdempotencyId), value);
+		}
+		public string? Signature
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(Signature));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(Signature), value);
+		}
+		public string? HomeRegion
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(HomeRegion));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(HomeRegion), value);
+		}
+
+		public SmsStatus? MessageStatus
+		{
+			get => _extendedProperties.GetValue<SmsStatus?>(ProviderKey, nameof(MessageStatus));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(MessageStatus), value);
+		}
+		public SmsStatus? SmsStatus
+		{
+			get => _extendedProperties.GetValue<SmsStatus?>(ProviderKey, nameof(SmsStatus));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(SmsStatus), value);
+		}
+		public string? SmsSid
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(SmsSid));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(SmsSid), value);
+		}
+		public string? MessageSid
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(MessageSid));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(MessageSid), value);
 		}
 	}
 }

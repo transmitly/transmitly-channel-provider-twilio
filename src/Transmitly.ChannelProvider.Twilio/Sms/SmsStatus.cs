@@ -12,28 +12,37 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+using Newtonsoft.Json;
+
 namespace Transmitly.ChannelProvider.TwilioClient.Sms
 {
-	internal static class ExtendedSmsDeliveryReportExtension
+	public enum SmsStatus
 	{
-		public static SmsDeliveryReport ApplyExtendedProperties(this SmsDeliveryReport voiceDeliveryReport, SmsStatusReport report)
-		{
-			_ = new ExtendedSmsDeliveryReportProperties(voiceDeliveryReport)
-			{
-				To = report.To,
-				From = report.From,
-				AccountSid = report.AccountSid,
-				ApiVersion = report.ApiVersion,
-				HomeRegion = report.HomeRegion,
-				IdempotencyId = report.IdempotencyId,
-				MessageSid = report.MessageSid,
-				MessageStatus = report.MessageStatus,
-				Signature = report.Signature,
-				SmsSid = report.SmsSid,
-				SmsStatus = report.SmsStatus
-			};
-
-			return voiceDeliveryReport;
-		}
+		[JsonProperty("queued")]
+		Queued,
+		[JsonProperty("sending")]
+		Sending,
+		[JsonProperty("sent")]
+		Sent,
+		[JsonProperty("failed")]
+		Failed,
+		[JsonProperty("delivered")]
+		Delivered,
+		[JsonProperty("undelivered")]
+		Undelivered,
+		[JsonProperty("receiving")]
+		Receiving,
+		[JsonProperty("received")]
+		Received,
+		[JsonProperty("accepted")]
+		Accepted,
+		[JsonProperty("scheduled")]
+		Scheduled,
+		[JsonProperty("read")]
+		Read,
+		[JsonProperty("partially_delivered")]
+		PartiallyDelivered,
+		[JsonProperty("canceled")]
+		Canceled
 	}
 }

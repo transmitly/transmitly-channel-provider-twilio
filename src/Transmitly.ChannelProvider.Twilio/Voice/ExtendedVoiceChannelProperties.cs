@@ -16,7 +16,6 @@ using System;
 using System.ComponentModel;
 using System.Linq;
 using System.Runtime.Serialization;
-using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 
 namespace Transmitly.ChannelProvider.TwilioClient.Voice
@@ -86,7 +85,6 @@ namespace Transmitly.ChannelProvider.TwilioClient.Voice
 		/// A resolver that will return the absolute URL that returns TwiML for this call.
 		/// This will override any value set in the <see cref="Url"/> property.
 		/// </summary>
-		[IgnoreDataMember]
 		public Func<IDispatchCommunicationContext, Task<string?>>? UrlResolver
 		{
 			get => _extendedProperties.GetValue<Func<IDispatchCommunicationContext, Task<string?>>>(ProviderKey, nameof(UrlResolver));
@@ -117,8 +115,6 @@ namespace Transmitly.ChannelProvider.TwilioClient.Voice
 		/// Called upon dispatch of message for storage prior to Twilio retrieval. 
 		/// <para><seealso cref="UrlResolver"/> or <seealso cref="Url"/></para>
 		/// </summary>
-		[System.Text.Json.Serialization.JsonIgnore]
-		[Newtonsoft.Json.JsonIgnore]
 		public Func<string, IVoice, IDispatchCommunicationContext, Task>? OnStoreMessageForRetrievalAsync
 		{
 			get => _extendedProperties.GetValue<Func<string, IVoice, IDispatchCommunicationContext, Task>?>(ProviderKey, nameof(OnStoreMessageForRetrievalAsync));

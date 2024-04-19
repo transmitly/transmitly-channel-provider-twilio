@@ -25,9 +25,10 @@ namespace Transmitly.ChannelProvider.TwilioClient
 			AccountSid = adaptorContext.GetValue("AccountSid");
 			ApiVersion = adaptorContext.GetValue("ApiVersion");
 			To = adaptorContext.GetValue("To");
-			From = adaptorContext.GetValue("From");			
+			From = adaptorContext.GetValue("From");
 			Signature = adaptorContext.GetValue("x-twilio-signature");
 			IdempotencyId = adaptorContext.GetValue("i-twilio-idempotency-token");
+			HomeRegion = adaptorContext.GetValue("x-home-region");
 		}
 
 		public string? AccountSid { get; protected set; }
@@ -36,5 +37,6 @@ namespace Transmitly.ChannelProvider.TwilioClient
 		public string? From { get; protected set; }
 		public string? IdempotencyId { get; protected set; }
 		public string? Signature { get; protected set; }
+		public string? HomeRegion { get; protected set; }
 	}
 }

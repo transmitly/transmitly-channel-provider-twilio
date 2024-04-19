@@ -12,6 +12,7 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+using Newtonsoft.Json;
 using System;
 using Transmitly.ChannelProvider.TwilioClient.Voice;
 using Transmitly.Delivery;
@@ -42,11 +43,40 @@ namespace Transmitly
 			CallSid = report.CallSid;
 			Timestamp = report.Timestamp;
 			ApiVersion = report.ApiVersion;
-			CallToken = report.CallToken;
 			AccountSid = report.AccountSid;
+			IdempotencyId = report.IdempotencyId;
+			Signature = report.Signature;
 			Duration = report.Duration;
-		}
+			Called = report.Called;
+			ToState = report.ToState;
+			CallerCountry = report.CallerCountry;
+			Direction = report.Direction;
+			CallbackSource = report.CallbackSource;
+			SipResponseCode = report.SipResponseCode;
+			CallerState = report.CallerState;
+			ToZip = report.ToZip;
+			SequenceNumber = report.SequenceNumber;
+			CallerZip = report.CallerZip;
+			ToCountry = report.ToCountry;
+			CalledZip = report.CalledZip;
+			ToCountry = report.ToCountry;
+			CalledZip = report.CalledZip;
+			CalledCity = report.CalledCity;
+			CallStatus = report.CallStatus;
+			CallDuration = report.CallDuration;
+			CalledCountry = report.CalledCountry;
+			CallerCity = report.CallerCity;
+			ToCity = report.ToCity;
+			FromCountry = report.FromCountry;
+			Caller = report.Caller;
+			FromCity = report.FromCity;
+			CalledState = report.CalledState;
+			FromZip = report.FromZip;
+			AnsweredBy = report.AnsweredBy;
+			FromState = report.FromState;
 
+		}
+		
 		/// <summary>
 		/// The phone number or client identifier of the party that initiated the call. 
 		/// Phone numbers are formatted with a '+' and country code, e.g., +16175551212 (<a href="https://www.twilio.com/docs/glossary/what-e164">E.164</a> format). 
@@ -111,21 +141,177 @@ namespace Transmitly
 		}
 
 		/// <summary>
-		/// A token string needed to invoke a forwarded call.
-		/// </summary>
-		public string? CallToken
-		{
-			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(CallToken));
-			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(CallToken), value);
-		}
-
-		/// <summary>
 		/// Your Twilio account ID. It is 34 characters long, and always starts with the letters AC.
 		/// </summary>
 		public string? AccountSid
 		{
 			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(AccountSid));
 			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(AccountSid), value);
+		}
+		
+		public string? Called
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(Called));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(Called), value);
+		}
+
+		public string? ToState
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(ToState));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(ToState), value);
+		}
+
+		public string? CallerCountry
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(CallerCountry));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(CallerCountry), value);
+		}
+
+		/// <summary>
+		/// The direction of the call.
+		/// </summary>
+		public Direction? Direction
+		{
+			get => _extendedProperties.GetValue<Direction?>(ProviderKey, nameof(Direction));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(Direction), value);
+		}
+
+		public string? CallbackSource
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(CallbackSource));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(CallbackSource), value);
+		}
+
+		public string? SipResponseCode
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(SipResponseCode));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(SipResponseCode), value);
+		}
+
+		public string? CallerState
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(CallerState));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(CallerState), value);
+		}
+
+		public string? ToZip
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(ToZip));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(ToZip), value);
+		}
+
+		public int? SequenceNumber
+		{
+			get => _extendedProperties.GetValue<int?>(ProviderKey, nameof(SequenceNumber));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(SequenceNumber), value);
+		}
+
+		public string? CallerZip
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(CallerZip));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(CallerZip), value);
+		}
+
+		public string? ToCountry
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(ToCountry));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(ToCountry), value);
+		}
+
+		public string? CalledZip
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(CalledZip));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(CalledZip), value);
+		}
+
+		public string? CalledCity
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(CalledCity));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(CalledCity), value);
+		}
+
+		public CallStatus? CallStatus
+		{
+			get => _extendedProperties.GetValue<CallStatus?>(ProviderKey, nameof(CallStatus));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(CallStatus), value);
+		}
+
+		public TimeSpan? CallDuration
+		{
+			get => _extendedProperties.GetValue<TimeSpan?>(ProviderKey, nameof(CallDuration));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(CallDuration), value);
+		}
+
+		public string? CalledCountry
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(CalledCountry));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(CalledCountry), value);
+		}
+
+		public string? CallerCity
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(CallerCity));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(CallerCity), value);
+		}
+
+		public string? ToCity
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(ToCity));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(ToCity), value);
+		}
+		
+		public string? FromCountry
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(FromCountry));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(FromCountry), value);
+		}
+
+		public string? Caller
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(Caller));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(Caller), value);
+		}
+
+		public string? FromCity
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(FromCity));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(FromCity), value);
+		}
+
+		public string? CalledState
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(CalledState));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(CalledState), value);
+		}
+
+		public string? FromZip
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(FromZip));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(FromZip), value);
+		}
+
+		public string? AnsweredBy
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(AnsweredBy));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(AnsweredBy), value);
+		}
+
+		public string? FromState
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(FromState));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(FromState), value);
+		}
+
+		public string? IdempotencyId
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(IdempotencyId));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(IdempotencyId), value);
+		}
+
+		public string? Signature
+		{
+			get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(Signature));
+			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(Signature), value);
 		}
 	}
 }
