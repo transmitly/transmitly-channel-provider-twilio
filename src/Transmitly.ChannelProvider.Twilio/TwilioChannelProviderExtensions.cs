@@ -13,10 +13,13 @@
 //  limitations under the License.
 
 using System;
+using System.Threading.Tasks;
 using Transmitly.ChannelProvider.TwilioClient;
 using Transmitly.ChannelProvider.TwilioClient.Sms;
 using Transmitly.ChannelProvider.TwilioClient.Voice;
 using Transmitly.Delivery;
+using Transmitly.Verification;
+using Transmitly.Verification.Configuration;
 
 namespace Transmitly
 {
@@ -47,7 +50,7 @@ namespace Transmitly
 		/// <summary>
 		/// Twilio specific settings for voice channels.
 		/// </summary>
-		/// <param name="sms">Voice Channel.</param>
+		/// <param name="voice">Voice Channel.</param>
 		/// <returns>Twilio voice properties.</returns>
 		public static ExtendedVoiceChannelProperties Twilio(this IVoiceChannel voice)
 		{
@@ -64,6 +67,11 @@ namespace Transmitly
 			return new DeliveryReportExtendedProperties(deliveryReport);
 		}
 
+		public static SenderVerificationExtendedProprties Twilio(this ISenderVerificationConfiguration configuration)
+		{
+			return new SenderVerificationExtendedProprties(configuration.ExtendedProperties);
+		}
+
 		/// <summary>
 		/// Adds channel provider support for Twilio.
 		/// </summary>
@@ -75,12 +83,89 @@ namespace Transmitly
 		{
 			var opts = new TwilioClientOptions();
 			options(opts);
+			builder.ChannelProvider
+				.Create(Id.ChannelProvider.Twilio(providerId), opts)
+				.AddClient<TwilioSmsChannelProviderClient, ISms>(Id.Channel.Sms())
+				.AddClient<TwilioVoiceChannelProviderClient, IVoice>(Id.Channel.Voice())
+				.AddDeliveryReportRequestAdaptor<SmsDeliveryStatusReportAdaptor>()
+				.AddDeliveryReportRequestAdaptor<VoiceDeliveryStatusReportAdaptor>()
+				.AddSenderVerificationClient<SmsSenderVerificationProviderClient>(true, Id.Channel.Sms())
+				.Register();
+			//builder.AddChannelProvider<TwilioSmsChannelProviderClient, ISms>(Id.ChannelProvider.Twilio(providerId), opts, Id.Channel.Sms());
+			//builder.AddChannelProvider<TwilioVoiceChannelProviderClient, IVoice>(Id.ChannelProvider.Twilio(providerId), opts, Id.Channel.Voice());
+			//builder.ChannelProvider.AddDeliveryReportRequestAdaptor<SmsDeliveryStatusReportAdaptor>();
+			//builder.ChannelProvider.AddDeliveryReportRequestAdaptor<VoiceDeliveryStatusReportAdaptor>();
+			//builder.ChannelProvider.AddSenderVerificationClient<SmsSenderVerificationProvider>(Id.Channel.Sms());
 
-			builder.AddChannelProvider<TwilioSmsChannelProviderClient, ISms>(Id.ChannelProvider.Twilio(providerId), opts, Id.Channel.Sms());
-			builder.AddChannelProvider<TwilioVoiceChannelProviderClient, IVoice>(Id.ChannelProvider.Twilio(providerId), opts, Id.Channel.Voice());
-			builder.ChannelProvider.AddDeliveryReportRequestAdaptor<SmsDeliveryStatusReportAdaptor>();
-			builder.ChannelProvider.AddDeliveryReportRequestAdaptor<VoiceDeliveryStatusReportAdaptor>();
 			return builder;
+		}
+	}
+
+	public sealed class SenderVerificationExtendedProprties
+	{
+		private readonly IExtendedProperties _extendedProprties;
+
+		internal SenderVerificationExtendedProprties(IExtendedProperties extendedProperties)
+        {
+            _extendedProprties = extendedProperties;
+        }
+        /// <summary>
+        /// The SID of the verification Service to fetch the resource from.
+        /// </summary>
+        public string? ServiceSid
+		{
+			get => _extendedProprties.GetValue<string?>(Constant.SenderVerifyPropertyKey, nameof(ServiceSid));
+			set => _extendedProprties.AddOrUpdate(Constant.SenderVerifyPropertyKey, nameof(ServiceSid), value);
+		}
+		/// <summary>
+		/// The Twilio-provided string that uniquely identifies the Verification resource to fetch.
+		/// </summary>
+		public string? Sid
+		{
+			get => _extendedProprties.GetValue<string?>(Constant.SenderVerifyPropertyKey, nameof(Sid));
+			set => _extendedProprties.AddOrUpdate(Constant.SenderVerifyPropertyKey, nameof(Sid), value);
+		}
+
+		public string? TemplateId
+		{
+			get => _extendedProprties.GetValue<string?>(Constant.SenderVerifyPropertyKey, nameof(TemplateId));
+			set => _extendedProprties.AddOrUpdate(Constant.SenderVerifyPropertyKey, nameof(TemplateId), value);
+		}
+
+	}
+	class InitiateSenderVerificationResult(bool isSuccessful, string channelId, string? code, string? sid) : IInitiateSenderVerificationResult
+	{
+		public bool IsSuccessful => isSuccessful;
+
+		public string? Code => code;
+
+		public string? Nonce => sid;
+
+		public string ChannelId => channelId;
+
+		public string ChannelProviderId => Id.ChannelProvider.Twilio();
+	}
+
+
+
+	class SmsSenderVerificationProviderClient : ISenderVerificationChannelProviderClient
+	{
+		public Task<IInitiateSenderVerificationResult> InitiateSenderVerification(ISenderVerificationContext senderVerificationContext)
+		{
+			var properties = new SenderVerificationExtendedProprties(senderVerificationContext.ExtendedProperties);
+			if (string.IsNullOrWhiteSpace(properties.ServiceSid))
+				return Task.FromResult<IInitiateSenderVerificationResult>(new InitiateSenderVerificationResult(false, senderVerificationContext.ChannelId, null, null));
+			throw new NotImplementedException();
+		}
+
+		public Task<ISenderVerificationStatus> IsSenderVerified(ISenderVerificationContext senderVerificationContext)
+		{
+			throw new NotImplementedException();
+		}
+
+		public Task<ISenderVerificationValidationResult> ValidateSenderVerification(ISenderVerificationContext senderVerificationContext, string code, string? nonce = null)
+		{
+			throw new NotImplementedException();
 		}
 	}
 }
