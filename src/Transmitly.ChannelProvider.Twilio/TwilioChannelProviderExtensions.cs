@@ -22,8 +22,14 @@ using Transmitly.Verification.Configuration;
 
 namespace Transmitly
 {
+	/// <summary>
+	/// Provides Twilio specific channel provider extension methods.
+	/// </summary>
 	public static class TwilioChannelProviderExtensions
 	{
+		//todo: this won't work for multiple twilio configurations
+		static TwilioCommunicationsClientExtensions? _clientExtensions;
+
 		/// <summary>
 		/// Gets the channel provider id for Twilio.
 		/// </summary>
@@ -66,11 +72,29 @@ namespace Transmitly
 			return new DeliveryReportExtendedProperties(deliveryReport);
 		}
 
+		/// <summary>
+		/// Twilio specific sender verification configurations.
+		/// </summary>
+		/// <param name="configuration">Sender verification configuration.</param>
+		/// <returns>Twilio extended properties for sender verification.</returns>
 		public static SenderVerificationExtendedProperties Twilio(this ISenderVerificationConfiguration configuration)
 		{
 			return new SenderVerificationExtendedProperties(configuration.ExtendedProperties);
 		}
 
+		/// <summary>
+		/// Provides twilio specific methods for the provided <see cref="ICommunicationsClient"/>.
+		/// </summary>
+		/// <param name="communicationsClient">Communications client instance.</param>
+		/// <returns></returns>
+		public static TwilioCommunicationsClientExtensions Twilio(this ICommunicationsClient communicationsClient)
+		{
+			if (_clientExtensions == null)
+				throw new TwilioException($"Twilio not configured. You must first call {nameof(AddTwilioSupport)}. and initialize the Twilio channel provider.");
+
+			return _clientExtensions;
+		}
+		
 		/// <summary>
 		/// Adds channel provider support for Twilio.
 		/// </summary>
@@ -90,6 +114,8 @@ namespace Transmitly
 				.AddDeliveryReportRequestAdaptor<TwilioVoiceDeliveryStatusReportAdaptor>()
 				.AddSenderVerificationClient<TwilioSenderVerificationProviderClient>(true, Id.Channel.Sms(), Id.Channel.Email(), Id.Channel.Voice())
 				.Register();
+
+			_clientExtensions = new(opts);
 
 			return builder;
 		}

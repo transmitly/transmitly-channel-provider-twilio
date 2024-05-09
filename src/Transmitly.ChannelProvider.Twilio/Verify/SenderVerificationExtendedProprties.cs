@@ -25,10 +25,10 @@ namespace Transmitly.ChannelProvider.TwilioClient.Verify
         /// <summary>
         /// The SID of the verification Service to fetch the resource from.
         /// </summary>
-        public string? ServiceSid
+        public string? VerificationSid
         {
-            get => _extendedProprties.GetValue<string?>(Constant.SenderVerifyPropertyKey, nameof(ServiceSid));
-            set => _extendedProprties.AddOrUpdate(Constant.SenderVerifyPropertyKey, nameof(ServiceSid), value);
+            get => _extendedProprties.GetValue<string?>(Constant.SenderVerifyPropertyKey, nameof(VerificationSid));
+            set => _extendedProprties.AddOrUpdate(Constant.SenderVerifyPropertyKey, nameof(VerificationSid), value);
         }
         /// <summary>
         /// The Twilio-provided string that uniquely identifies the Verification resource to fetch.

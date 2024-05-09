@@ -15,6 +15,7 @@
 using Newtonsoft.Json;
 using System;
 using System.Collections.Generic;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Transmitly.Verification;
 using Twilio.Rest.Verify.V2.Service;
@@ -23,18 +24,23 @@ namespace Transmitly.ChannelProvider.TwilioClient.Verify
 {
 	class TwilioSenderVerificationProviderClient : ISenderVerificationChannelProviderClient
 	{
-		public async Task<IReadOnlyCollection<IInitiateSenderVerificationResult>> InitiateSenderVerification(ISenderVerificationContext senderVerificationContext)
+		public readonly static HttpClient _httpClient = new();
+		private TwilioClientOptions? _twilioClientOptions=> throw new NotImplementedException();
+
+		public async Task<IReadOnlyCollection<IInitiateSenderVerificationResult>> InitiateSenderVerificationAsync(ISenderVerificationContext senderVerificationContext)
 		{
+			Guard.AgainstNull(senderVerificationContext.ChannelId);
 			var properties = new SenderVerificationExtendedProperties(senderVerificationContext.ExtendedProperties);
-			if (string.IsNullOrWhiteSpace(properties.ServiceSid))
-				return [new InitiateSenderVerificationResult(SenderVerificationStatus.Exception, Guard.AgainstNull(senderVerificationContext.ChannelId), null)];
+			if (string.IsNullOrWhiteSpace(properties.VerificationSid))
+				return [new InitiateSenderVerificationResult(SenderVerificationStatus.Exception, senderVerificationContext.ChannelId, null)];
 
 			var verification = await VerificationResource.CreateAsync(
 				to: senderVerificationContext.SenderAddress.Value,
 				channel: ToTwilioChannel(senderVerificationContext.ChannelId),
-				pathServiceSid: properties.ServiceSid
-			);
+				pathServiceSid: properties.VerificationSid, client: new TwilioHttpClient(_httpClient, _twilioClientOptions));
+
 			var results = new List<IInitiateSenderVerificationResult>(verification.SendCodeAttempts.Count);
+
 			foreach (var result in verification.SendCodeAttempts)
 			{
 				if (result == null)
@@ -44,11 +50,11 @@ namespace Transmitly.ChannelProvider.TwilioClient.Verify
 				if (sendAttempt == null)
 					continue;
 
-				results.Add(new InitiateSenderVerificationResult(ConvertStatus(verification.Status), senderVerificationContext.ChannelId!, sendAttempt.AttemptSid));
+				results.Add(new InitiateSenderVerificationResult(ConvertStatus(verification.Status), senderVerificationContext.ChannelId!, verification.Sid));
 			}
 			return results;
 		}
-		
+
 		private static SenderVerificationStatus ConvertStatus(string status)
 		{
 			return status switch
@@ -72,17 +78,27 @@ namespace Transmitly.ChannelProvider.TwilioClient.Verify
 				return "email";
 			else
 				throw new TwilioException("Unexpected Transmitly channel.");
-
 		}
 
-		public Task<ISenderVerificationStatusResult> IsSenderVerified(ISenderVerificationContext senderVerificationContext, string? token)
+		public async Task<ISenderVerificationValidationResult> ConfirmSenderVerificationAsync(ISenderVerificationContext senderVerificationContext, string code, string? token = null)
+		{
+			var properties = new SenderVerificationExtendedProperties(senderVerificationContext.ExtendedProperties);
+			
+			if (string.IsNullOrWhiteSpace(properties.VerificationSid))
+				throw new NotImplementedException();
+			
+			var result = await VerificationCheckResource.CreateAsync(new CreateVerificationCheckOptions(properties.VerificationSid)
+			{
+				VerificationSid = token,
+				Code = code
+			}, new TwilioHttpClient(_httpClient, _twilioClientOptions));
+
+			return new SenderVerificationValidationResult(true, result.Valid.HasValue && result.Valid.Value, senderVerificationContext.ChannelProviderId!, senderVerificationContext.ChannelId!, senderVerificationContext.SenderAddress.Value);
+		}
+
+		public Task<ISenderVerificationStatusResult> IsSenderVerifiedAsync(ISenderVerificationContext senderVerificationContext, string? token = null)
 		{
 			return Task.FromResult<ISenderVerificationStatusResult>(new SenderVerificationStatusResult(senderVerificationContext.ChannelId!));
-		}
-
-		public Task<ISenderVerificationValidationResult> ValidateSenderVerification(ISenderVerificationContext senderVerificationContext, string code, string? token = null)
-		{
-			throw new NotImplementedException();
 		}
 	}
 }
