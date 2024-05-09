@@ -12,26 +12,18 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-using System.Net.Http;
+using Newtonsoft.Json;
+using System;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Sms
+namespace Transmitly.ChannelProvider.TwilioClient.Verify
 {
-	internal static class RestClientConfiguration
-	{
-		public static void Configure(HttpClient httpClient, TwilioClientOptions channelProviderConfiguration)
-		{
-			Guard.AgainstNull(httpClient);
-			Guard.AgainstNull(channelProviderConfiguration);
-
-			if (channelProviderConfiguration.WebProxy != null)
-			{
-				httpClient = new(new HttpClientHandler
-				{
-					Proxy = channelProviderConfiguration.WebProxy
-				});
-			}
-
-			httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(channelProviderConfiguration.UserAgent);
-		}
-	}
+    sealed class SendCodeAttempt
+    {
+        [JsonProperty("time")]
+        public DateTime? Time { get; set; }
+        [JsonProperty("channelId")]
+        public string? ChannelId { get; set; }
+        [JsonProperty("attempt_sid")]
+        public string? AttemptSid { get; set; }
+    }
 }

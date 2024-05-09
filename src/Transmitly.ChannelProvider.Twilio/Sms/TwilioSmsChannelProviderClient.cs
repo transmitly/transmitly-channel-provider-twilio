@@ -19,8 +19,6 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using Transmitly.Delivery;
-using Twilio;
-using Twilio.Clients;
 using Twilio.Rest.Api.V2010.Account;
 
 namespace Transmitly.ChannelProvider.TwilioClient.Sms

@@ -12,26 +12,18 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-using System.Net.Http;
+using Transmitly.Verification;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Sms
+namespace Transmitly.ChannelProvider.TwilioClient.Verify
 {
-	internal static class RestClientConfiguration
+	class InitiateSenderVerificationResult(SenderVerificationStatus status, string channelId, string? token) : IInitiateSenderVerificationResult
 	{
-		public static void Configure(HttpClient httpClient, TwilioClientOptions channelProviderConfiguration)
-		{
-			Guard.AgainstNull(httpClient);
-			Guard.AgainstNull(channelProviderConfiguration);
+		public string? Token => token;
 
-			if (channelProviderConfiguration.WebProxy != null)
-			{
-				httpClient = new(new HttpClientHandler
-				{
-					Proxy = channelProviderConfiguration.WebProxy
-				});
-			}
+		public string ChannelId => Guard.AgainstNullOrWhiteSpace(channelId);
 
-			httpClient.DefaultRequestHeaders.UserAgent.ParseAdd(channelProviderConfiguration.UserAgent);
-		}
+		public string ChannelProviderId => Id.ChannelProvider.Twilio();
+
+		public SenderVerificationStatus Status => status;
 	}
 }

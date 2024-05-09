@@ -17,49 +17,46 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Transmitly.Delivery;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Sms
+namespace Transmitly.ChannelProvider.TwilioClient.Voice
 {
-	sealed class SmsDeliveryStatusReportAdaptor : IChannelProviderDeliveryReportRequestAdaptor
+	sealed class TwilioVoiceDeliveryStatusReportAdaptor : IChannelProviderDeliveryReportRequestAdaptor
 	{
+		//todo: request validation
 		//https://www.twilio.com/docs/usage/webhooks/webhooks-security
 		public Task<IReadOnlyCollection<DeliveryReport>?> AdaptAsync(IRequestAdaptorContext adaptorContext)
 		{
 			if (!ShouldAdapt(adaptorContext))
 				return Task.FromResult<IReadOnlyCollection<DeliveryReport>?>(null);
 
-			var smsReport = new SmsStatusReport(adaptorContext);
+			var voiceReport = new VoiceStatusReport(adaptorContext);
 
-			var ret = new SmsDeliveryReport(
+			var ret = new VoiceDeliveryReport(
 					DeliveryReport.Event.StatusChanged(),
-					Id.Channel.Sms(),
+					Id.Channel.Voice(),
 					Id.ChannelProvider.Twilio(),
 					adaptorContext.PipelineName,
-					smsReport.SmsSid,
-					ConvertStatus(smsReport.SmsStatus),
+					voiceReport.CallSid,
+					ConvertStatus(voiceReport.CallStatus),
 					null,
 					null,
 					null
-				).ApplyExtendedProperties(smsReport);
+				).ApplyExtendedProperties(voiceReport);
 
 			return Task.FromResult<IReadOnlyCollection<DeliveryReport>?>(new List<DeliveryReport>() { ret }.AsReadOnly());
 		}
 
-		private DispatchStatus ConvertStatus(SmsStatus? messageStatus)
+		private DispatchStatus ConvertStatus(CallStatus? callStatus)
 		{
-			return messageStatus switch
+			return callStatus switch
 			{
-				SmsStatus.Queued or SmsStatus.Sending or SmsStatus.Sent or SmsStatus.Receiving or SmsStatus.Accepted or SmsStatus.Scheduled =>
+				CallStatus.Unknown or CallStatus.Queued =>
+					DispatchStatus.Dispatched,
+				CallStatus.Initiated or CallStatus.Ringing or CallStatus.InProgress =>
 					DispatchStatus.Pending,
-
-				SmsStatus.Undelivered or SmsStatus.Failed =>
-					DispatchStatus.Undeliverable,
-
-				SmsStatus.Received or SmsStatus.Delivered or SmsStatus.Read or SmsStatus.PartiallyDelivered =>
+				CallStatus.Completed =>
 					DispatchStatus.Delivered,
-
-				SmsStatus.Canceled =>
-					DispatchStatus.Rejected,
-
+				CallStatus.Failed or CallStatus.Busy or CallStatus.NoAnswer =>
+					DispatchStatus.Undeliverable,
 				_ => DispatchStatus.Unknown,
 			};
 		}
@@ -67,7 +64,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 		private static bool ShouldAdapt(IRequestAdaptorContext adaptorContext)
 		{
 			return
-				(adaptorContext.GetValue(DeliveryUtil.ChannelIdKey)?.Equals(Id.Channel.Sms(), StringComparison.InvariantCultureIgnoreCase) ?? false) &&
+				(adaptorContext.GetValue(DeliveryUtil.ChannelIdKey)?.Equals(Id.Channel.Voice(), StringComparison.InvariantCultureIgnoreCase) ?? false) &&
 				(adaptorContext.GetValue(DeliveryUtil.ChannelProviderIdKey)?.StartsWith(Id.ChannelProvider.Twilio(), StringComparison.InvariantCultureIgnoreCase) ?? false);
 		}
 	}
