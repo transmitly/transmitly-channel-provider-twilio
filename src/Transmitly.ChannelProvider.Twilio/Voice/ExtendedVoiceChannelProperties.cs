@@ -176,7 +176,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Voice
 			return GetProperties();
 		}
 
-		private PropertyDescriptorCollection GetProperties()
+		private static PropertyDescriptorCollection GetProperties()
 		{
 			var props = typeof(ExtendedVoiceChannelProperties).GetProperties().Where(x => x.GetCustomAttributes(typeof(IgnoreDataMemberAttribute), false).Any());
 			var descriptors = props.Select(s => (PropertyDescriptor)new ExtendedVoiceChannelPropertiesPropertyDescriptor(s.Name, [])).ToArray();

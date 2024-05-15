@@ -112,7 +112,7 @@ namespace Transmitly
 				.AddClient<TwilioVoiceChannelProviderClient, IVoice>(Id.Channel.Voice())
 				.AddDeliveryReportRequestAdaptor<TwilioSmsDeliveryStatusReportAdaptor>()
 				.AddDeliveryReportRequestAdaptor<TwilioVoiceDeliveryStatusReportAdaptor>()
-				.AddSenderVerificationClient<TwilioSenderVerificationProviderClient>(true, Id.Channel.Sms(), Id.Channel.Email(), Id.Channel.Voice())
+				.AddSenderVerificationClient<TwilioSenderVerificationProviderClient>(true, opts, Id.Channel.Sms(), Id.Channel.Email(), Id.Channel.Voice())
 				.Register();
 
 			_clientExtensions = new(opts);

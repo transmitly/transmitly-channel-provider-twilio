@@ -44,7 +44,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 			return Task.FromResult<IReadOnlyCollection<DeliveryReport>?>(new List<DeliveryReport>() { ret }.AsReadOnly());
 		}
 
-		private DispatchStatus ConvertStatus(SmsStatus? messageStatus)
+		private static DispatchStatus ConvertStatus(SmsStatus? messageStatus)
 		{
 			return messageStatus switch
 			{
