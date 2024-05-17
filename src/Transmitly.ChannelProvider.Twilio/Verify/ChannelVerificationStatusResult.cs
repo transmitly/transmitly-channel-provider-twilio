@@ -16,14 +16,12 @@ using Transmitly.Verification;
 
 namespace Transmitly.ChannelProvider.TwilioClient.Verify
 {
-	class InitiateSenderVerificationResult(SenderVerificationStatus status, string channelId, string? token) : IInitiateSenderVerificationResult
+	class ChannelVerificationStatusResult(string channel) : IChannelVerificationStatusResult
 	{
-		public string? Token => token;
+		public bool? IsVerified => null;
 
-		public string ChannelId => Guard.AgainstNullOrWhiteSpace(channelId);
+		public string? ChannelId => Guard.AgainstNullOrWhiteSpace(channel);
 
-		public string ChannelProviderId => Id.ChannelProvider.Twilio();
-
-		public SenderVerificationStatus Status => status;
+		public string? ChannelProviderId => Id.ChannelProvider.Twilio();
 	}
 }

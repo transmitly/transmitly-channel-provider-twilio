@@ -77,9 +77,9 @@ namespace Transmitly
 		/// </summary>
 		/// <param name="configuration">Sender verification configuration.</param>
 		/// <returns>Twilio extended properties for sender verification.</returns>
-		public static SenderVerificationExtendedProperties Twilio(this ISenderVerificationConfiguration configuration)
+		public static ChannelVerificationExtendedProperties Twilio(this IChannelVerificationConfiguration configuration)
 		{
-			return new SenderVerificationExtendedProperties(configuration.ExtendedProperties);
+			return new ChannelVerificationExtendedProperties(configuration.ExtendedProperties);
 		}
 
 		/// <summary>
@@ -112,7 +112,7 @@ namespace Transmitly
 				.AddClient<TwilioVoiceChannelProviderClient, IVoice>(Id.Channel.Voice())
 				.AddDeliveryReportRequestAdaptor<TwilioSmsDeliveryStatusReportAdaptor>()
 				.AddDeliveryReportRequestAdaptor<TwilioVoiceDeliveryStatusReportAdaptor>()
-				.AddSenderVerificationClient<TwilioSenderVerificationProviderClient>(true, opts, Id.Channel.Sms(), Id.Channel.Email(), Id.Channel.Voice())
+				.AddChannelVerificationClient<TwilioChannelVerificationProviderClient>(opts, Id.Channel.Sms(), Id.Channel.Email(), Id.Channel.Voice())
 				.Register();
 
 			_clientExtensions = new(opts);

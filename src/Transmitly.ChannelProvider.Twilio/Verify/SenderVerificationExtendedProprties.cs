@@ -14,11 +14,11 @@
 
 namespace Transmitly.ChannelProvider.TwilioClient.Verify
 {
-    public sealed class SenderVerificationExtendedProperties
+    public sealed class ChannelVerificationExtendedProperties
     {
         private readonly IExtendedProperties _extendedProprties;
 
-        internal SenderVerificationExtendedProperties(IExtendedProperties extendedProperties)
+        internal ChannelVerificationExtendedProperties(IExtendedProperties extendedProperties)
         {
             _extendedProprties = extendedProperties;
         }
@@ -27,22 +27,22 @@ namespace Transmitly.ChannelProvider.TwilioClient.Verify
         /// </summary>
         public string? VerificationSid
         {
-            get => _extendedProprties.GetValue<string?>(Constant.SenderVerifyPropertyKey, nameof(VerificationSid));
-            set => _extendedProprties.AddOrUpdate(Constant.SenderVerifyPropertyKey, nameof(VerificationSid), value);
+            get => _extendedProprties.GetValue<string?>(Constant.ChannelVerifyPropertyKey, nameof(VerificationSid));
+            set => _extendedProprties.AddOrUpdate(Constant.ChannelVerifyPropertyKey, nameof(VerificationSid), value);
         }
         /// <summary>
         /// The Twilio-provided string that uniquely identifies the Verification resource to fetch.
         /// </summary>
         public string? Sid
         {
-            get => _extendedProprties.GetValue<string?>(Constant.SenderVerifyPropertyKey, nameof(Sid));
-            set => _extendedProprties.AddOrUpdate(Constant.SenderVerifyPropertyKey, nameof(Sid), value);
+            get => _extendedProprties.GetValue<string?>(Constant.ChannelVerifyPropertyKey, nameof(Sid));
+            set => _extendedProprties.AddOrUpdate(Constant.ChannelVerifyPropertyKey, nameof(Sid), value);
         }
 
         public string? TemplateId
         {
-            get => _extendedProprties.GetValue<string?>(Constant.SenderVerifyPropertyKey, nameof(TemplateId));
-            set => _extendedProprties.AddOrUpdate(Constant.SenderVerifyPropertyKey, nameof(TemplateId), value);
+            get => _extendedProprties.GetValue<string?>(Constant.ChannelVerifyPropertyKey, nameof(TemplateId));
+            set => _extendedProprties.AddOrUpdate(Constant.ChannelVerifyPropertyKey, nameof(TemplateId), value);
         }
 
     }
