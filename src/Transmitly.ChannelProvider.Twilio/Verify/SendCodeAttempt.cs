@@ -12,13 +12,18 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-namespace Transmitly
+using Newtonsoft.Json;
+using System;
+
+namespace Transmitly.ChannelProvider.TwilioClient.Verify
 {
-	internal static class Constant
-	{
-		public const string Id = "Twilio";
-		public const string VoicePropertiesKey = $"{Id}.Voice";
-		public const string SmsPropertiesKey = $"{Id}.Sms";
-		public const string ChannelVerifyPropertyKey = $"{Id}.Verify";
-	}
+    sealed class SendCodeAttempt
+    {
+        [JsonProperty("time")]
+        public DateTime? Time { get; set; }
+        [JsonProperty("channelId")]
+        public string? ChannelId { get; set; }
+        [JsonProperty("attempt_sid")]
+        public string? AttemptSid { get; set; }
+    }
 }

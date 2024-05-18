@@ -15,13 +15,21 @@
 using System;
 using Transmitly.ChannelProvider.TwilioClient;
 using Transmitly.ChannelProvider.TwilioClient.Sms;
+using Transmitly.ChannelProvider.TwilioClient.Verify;
 using Transmitly.ChannelProvider.TwilioClient.Voice;
 using Transmitly.Delivery;
+using Transmitly.Verification.Configuration;
 
 namespace Transmitly
 {
+	/// <summary>
+	/// Provides Twilio specific channel provider extension methods.
+	/// </summary>
 	public static class TwilioChannelProviderExtensions
 	{
+		//todo: this won't work for multiple twilio configurations
+		static TwilioCommunicationsClientExtensions? _clientExtensions;
+
 		/// <summary>
 		/// Gets the channel provider id for Twilio.
 		/// </summary>
@@ -47,7 +55,7 @@ namespace Transmitly
 		/// <summary>
 		/// Twilio specific settings for voice channels.
 		/// </summary>
-		/// <param name="sms">Voice Channel.</param>
+		/// <param name="voice">Voice Channel.</param>
 		/// <returns>Twilio voice properties.</returns>
 		public static ExtendedVoiceChannelProperties Twilio(this IVoiceChannel voice)
 		{
@@ -65,6 +73,29 @@ namespace Transmitly
 		}
 
 		/// <summary>
+		/// Twilio specific sender verification configurations.
+		/// </summary>
+		/// <param name="configuration">Sender verification configuration.</param>
+		/// <returns>Twilio extended properties for sender verification.</returns>
+		public static ChannelVerificationExtendedProperties Twilio(this IChannelVerificationConfiguration configuration)
+		{
+			return new ChannelVerificationExtendedProperties(configuration.ExtendedProperties);
+		}
+
+		/// <summary>
+		/// Provides twilio specific methods for the provided <see cref="ICommunicationsClient"/>.
+		/// </summary>
+		/// <param name="communicationsClient">Communications client instance.</param>
+		/// <returns></returns>
+		public static TwilioCommunicationsClientExtensions Twilio(this ICommunicationsClient communicationsClient)
+		{
+			if (_clientExtensions == null)
+				throw new TwilioException($"Twilio not configured. You must first call {nameof(AddTwilioSupport)}. and initialize the Twilio channel provider.");
+
+			return _clientExtensions;
+		}
+		
+		/// <summary>
 		/// Adds channel provider support for Twilio.
 		/// </summary>
 		/// <param name="builder">Communications builder.</param>
@@ -75,11 +106,17 @@ namespace Transmitly
 		{
 			var opts = new TwilioClientOptions();
 			options(opts);
+			builder.ChannelProvider
+				.Build(Id.ChannelProvider.Twilio(providerId), opts)
+				.AddClient<TwilioSmsChannelProviderClient, ISms>(Id.Channel.Sms())
+				.AddClient<TwilioVoiceChannelProviderClient, IVoice>(Id.Channel.Voice())
+				.AddDeliveryReportRequestAdaptor<TwilioSmsDeliveryStatusReportAdaptor>()
+				.AddDeliveryReportRequestAdaptor<TwilioVoiceDeliveryStatusReportAdaptor>()
+				.AddChannelVerificationClient<TwilioChannelVerificationProviderClient>(opts, Id.Channel.Sms(), Id.Channel.Email(), Id.Channel.Voice())
+				.Register();
 
-			builder.AddChannelProvider<TwilioSmsChannelProviderClient, ISms>(Id.ChannelProvider.Twilio(providerId), opts, Id.Channel.Sms());
-			builder.AddChannelProvider<TwilioVoiceChannelProviderClient, IVoice>(Id.ChannelProvider.Twilio(providerId), opts, Id.Channel.Voice());
-			builder.ChannelProvider.AddDeliveryReportRequestAdaptor<SmsDeliveryStatusReportAdaptor>();
-			builder.ChannelProvider.AddDeliveryReportRequestAdaptor<VoiceDeliveryStatusReportAdaptor>();
+			_clientExtensions = new(opts);
+
 			return builder;
 		}
 	}

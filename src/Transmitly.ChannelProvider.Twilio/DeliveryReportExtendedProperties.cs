@@ -19,16 +19,21 @@ namespace Transmitly
 	/// <summary>
 	/// Extend delivery properties for available channels.
 	/// </summary>
-	/// <param name="deliveryReport">Delivery report.</param>
-	public sealed class DeliveryReportExtendedProperties(DeliveryReport deliveryReport)
+	public sealed class DeliveryReportExtendedProperties
 	{
+		internal DeliveryReportExtendedProperties(DeliveryReport deliveryReport)
+		{
+			Sms = new ExtendedSmsDeliveryReportProperties(deliveryReport);
+			Voice = new ExtendedVoiceDeliveryReportProperties(deliveryReport);
+		}
+
 		/// <summary>
 		/// Gets SMS extended properties for the delivery report.
 		/// </summary>
-		public ExtendedSmsDeliveryReportProperties Sms { get; } = new ExtendedSmsDeliveryReportProperties(deliveryReport);
+		public ExtendedSmsDeliveryReportProperties Sms { get; }
 		/// <summary>
-		/// Gets Voice extended properties for the delviery report.
+		/// Gets Voice extended properties for the delivery report.
 		/// </summary>
-		public ExtendedVoiceDeliveryReportProperties Voice { get; } = new ExtendedVoiceDeliveryReportProperties(deliveryReport);
+		public ExtendedVoiceDeliveryReportProperties Voice { get; }
 	}
 }

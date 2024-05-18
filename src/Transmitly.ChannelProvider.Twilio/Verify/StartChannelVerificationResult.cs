@@ -12,13 +12,18 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-namespace Transmitly
+using Transmitly.Verification;
+
+namespace Transmitly.ChannelProvider.TwilioClient.Verify
 {
-	internal static class Constant
+	class StartChannelVerificationResult(ChannelVerificationStatus status, string channelId, string? token) : IStartChannelVerificationResult
 	{
-		public const string Id = "Twilio";
-		public const string VoicePropertiesKey = $"{Id}.Voice";
-		public const string SmsPropertiesKey = $"{Id}.Sms";
-		public const string ChannelVerifyPropertyKey = $"{Id}.Verify";
+		public string? Token => token;
+
+		public string ChannelId => Guard.AgainstNullOrWhiteSpace(channelId);
+
+		public string ChannelProviderId => Id.ChannelProvider.Twilio();
+
+		public ChannelVerificationStatus Status => status;
 	}
 }

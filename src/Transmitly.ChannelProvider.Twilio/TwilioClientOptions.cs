@@ -28,7 +28,6 @@ namespace Transmitly.ChannelProvider.TwilioClient
 		public IWebProxy? WebProxy { get; set; }
 		public string Edge { get; set; } = "ashburn";
 		public string Region { get; set; } = "us1";
-
 		public string UserAgent => _userAgent;
 
 		private static string GetUserAgent()

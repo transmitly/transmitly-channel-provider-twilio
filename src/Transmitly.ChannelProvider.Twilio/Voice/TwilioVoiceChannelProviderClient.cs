@@ -21,7 +21,6 @@ using Transmitly.ChannelProvider.TwilioClient.Sms;
 using Transmitly.Delivery;
 using Twilio.Rest.Api.V2010.Account;
 using Twilio.TwiML;
-using Twilio.TwiML.Messaging;
 using Twilio.Types;
 
 
