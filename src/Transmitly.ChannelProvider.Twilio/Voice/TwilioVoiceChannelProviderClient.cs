@@ -40,7 +40,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Voice
 		protected override async Task<IReadOnlyCollection<IDispatchResult?>> DispatchAsync(System.Net.Http.HttpClient restClient, IVoice voice, IDispatchCommunicationContext communicationContext, CancellationToken cancellationToken)
 		{
 			var voiceProperties = new ExtendedVoiceChannelProperties(voice.ExtendedProperties);
-			var recipients = communicationContext.RecipientAudiences.SelectMany(a => a.Addresses.Select(addr => new PhoneNumber(addr.Value))).ToList();
+			var recipients = communicationContext.PlatformIdentities.SelectMany(a => a.Addresses.Select(addr => new PhoneNumber(addr.Value))).ToList();
 			var results = new List<IDispatchResult>(recipients.Count);
 			var from = new PhoneNumber(Guard.AgainstNull(voice.From).Value);
 
