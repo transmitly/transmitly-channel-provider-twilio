@@ -33,7 +33,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 			Guard.AgainstNull(sms);
 			Guard.AgainstNull(communicationContext);
 
-			var recipients = communicationContext.RecipientAudiences.SelectMany(a => a.Addresses.Select(addr => addr.Value)).ToList();
+			var recipients = communicationContext.PlatformIdentities.SelectMany(a => a.Addresses.Select(addr => addr.Value)).ToList();
 			var smsProperties = new ExtendedSmsChannelProperties(sms.ExtendedProperties);
 			var results = new List<IDispatchResult>(recipients.Count);
 
