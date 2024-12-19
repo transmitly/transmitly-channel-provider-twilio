@@ -1,6 +1,6 @@
 # Transmitly.ChannelProvider.Twilio
 
-A [Transmitly](https://github.com/transmitly/transmitly) channel provider that enables sending SMS communications with Twilio
+A [Transmitly](https://github.com/transmitly/transmitly) channel provider that enables sending SMS and Voice communications with Twilio
 
 ### Getting started
 

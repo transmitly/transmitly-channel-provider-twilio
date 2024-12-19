@@ -13,7 +13,10 @@
 //  limitations under the License.
 
 using System;
-using Transmitly.ChannelProvider.TwilioClient;
+using Transmitly.ChannelProvider.TwilioClient.Configuration;
+using Transmitly.ChannelProvider.TwilioClient.Configuration.Sms;
+using Transmitly.ChannelProvider.TwilioClient.Configuration.Verify;
+using Transmitly.ChannelProvider.TwilioClient.Configuration.Voice;
 using Transmitly.ChannelProvider.TwilioClient.Sms;
 using Transmitly.ChannelProvider.TwilioClient.Verify;
 using Transmitly.ChannelProvider.TwilioClient.Voice;
@@ -30,24 +33,24 @@ namespace Transmitly
 		//todo: this won't work for multiple twilio configurations
 		static TwilioCommunicationsClientExtensions? _clientExtensions;
 
-		/// <summary>
-		/// Gets the channel provider id for Twilio.
-		/// </summary>
-		/// <param name="channelProviders">Channel providers object.</param>
-		/// <param name="providerId">Optional channel provider Id.</param>
-		/// <returns>Twilio channel provider id.</returns>
-		public static string Twilio(this ChannelProviders channelProviders, string? providerId = null)
-		{
-			Guard.AgainstNull(channelProviders);
-			return channelProviders.GetId(Constant.Id, providerId);
-		}
+        /// <summary>
+        /// Gets the channel provider id for Twilio.
+        /// </summary>
+        /// <param name="channelProviders">Channel providers object.</param>
+        /// <param name="providerId">Optional channel provider Id.</param>
+        /// <returns>Twilio channel provider id.</returns>
+        public static string Twilio(this ChannelProviders channelProviders, string? providerId = null)
+        {
+            Guard.AgainstNull(channelProviders);
+            return channelProviders.GetId(TwilioConstant.Id, providerId);
+        }
 
-		/// <summary>
-		/// Twilio specific settings for Sms channels.
-		/// </summary>
-		/// <param name="sms">Sms Channel.</param>
-		/// <returns>Twilio Sms properties.</returns>
-		public static ExtendedSmsChannelProperties Twilio(this ISmsChannel sms)
+        /// <summary>
+        /// Twilio specific settings for Sms channels.
+        /// </summary>
+        /// <param name="sms">Sms Channel.</param>
+        /// <returns>Twilio Sms properties.</returns>
+        public static ExtendedSmsChannelProperties Twilio(this ISmsChannel sms)
 		{
 			return new ExtendedSmsChannelProperties(sms);
 		}
@@ -90,7 +93,7 @@ namespace Transmitly
 		public static TwilioCommunicationsClientExtensions Twilio(this ICommunicationsClient communicationsClient)
 		{
 			if (_clientExtensions == null)
-				throw new TwilioException($"Twilio not configured. You must first call {nameof(AddTwilioSupport)}. and initialize the Twilio channel provider.");
+				throw new NotSupportedException($"Twilio not configured. You must first call {nameof(AddTwilioSupport)}. and initialize the Twilio channel provider.");
 
 			return _clientExtensions;
 		}

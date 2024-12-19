@@ -5,6 +5,10 @@ VisualStudioVersion = 17.9.34518.117
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Transmitly.ChannelProvider.Twilio", "src\Transmitly.ChannelProvider.Twilio\Transmitly.ChannelProvider.Twilio.csproj", "{271D575D-C5D9-4350-9822-8038E69C140B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transmitly.ChannelProvider.Twilio.Configuration", "src\Transmitly.ChannelProvider.Twilio.Configuration\Transmitly.ChannelProvider.Twilio.Configuration.csproj", "{F8238E05-A5F6-435E-91BD-FAE85A27E23C}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Transmitly.ChannelProvider.Twilio.Sdk", "src\Transmitly.ChannelProvider.Twilio.Sdk\Transmitly.ChannelProvider.Twilio.Sdk.csproj", "{F6913382-6F02-48C1-9C72-B315F65DCD09}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,6 +19,14 @@ Global
 		{271D575D-C5D9-4350-9822-8038E69C140B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{271D575D-C5D9-4350-9822-8038E69C140B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{271D575D-C5D9-4350-9822-8038E69C140B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F8238E05-A5F6-435E-91BD-FAE85A27E23C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F8238E05-A5F6-435E-91BD-FAE85A27E23C}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F8238E05-A5F6-435E-91BD-FAE85A27E23C}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F8238E05-A5F6-435E-91BD-FAE85A27E23C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{F6913382-6F02-48C1-9C72-B315F65DCD09}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{F6913382-6F02-48C1-9C72-B315F65DCD09}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{F6913382-6F02-48C1-9C72-B315F65DCD09}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{F6913382-6F02-48C1-9C72-B315F65DCD09}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
