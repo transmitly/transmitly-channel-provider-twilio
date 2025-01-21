@@ -14,7 +14,7 @@
 
 namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
 {
-    public static class ExtendedVoiceDeliveryReportExtension
+    static class ExtendedVoiceDeliveryReportExtension
     {
         public static VoiceDeliveryReport ApplyExtendedProperties(this VoiceDeliveryReport voiceDeliveryReport, VoiceStatusReport report)
         {

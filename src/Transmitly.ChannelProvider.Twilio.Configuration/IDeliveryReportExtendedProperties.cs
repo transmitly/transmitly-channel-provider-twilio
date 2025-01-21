@@ -12,17 +12,17 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-using Transmitly.ChannelProvider.TwilioClient.Configuration;
-using Transmitly.Verification;
+using Transmitly.ChannelProvider.TwilioClient.Configuration.Sms;
+using Transmitly.ChannelProvider.TwilioClient.Configuration.Voice;
+using Transmitly.Delivery;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Verify
+namespace Transmitly
 {
-	class ChannelVerificationStatusResult(string channel) : IChannelVerificationStatusResult
-	{
-		public bool? IsVerified => null;
+    public interface IDeliveryReportExtendedProperties
+    {
+        IDeliveryReportExtendedProperties Adapt(DeliveryReport report);
 
-		public string? ChannelId => Guard.AgainstNullOrWhiteSpace(channel);
-
-		public string? ChannelProviderId => TwilioConstant.Id;
-	}
+        IExtendedSmsDeliveryReportProperties Sms { get; }
+        IExtendedVoiceDeliveryReportProperties Voice { get; }
+    }
 }

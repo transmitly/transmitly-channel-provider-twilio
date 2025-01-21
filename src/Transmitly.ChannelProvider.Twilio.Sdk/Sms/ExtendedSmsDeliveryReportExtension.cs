@@ -14,7 +14,7 @@
 
 namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Sms
 {
-    public static class ExtendedSmsDeliveryReportExtension
+    static class ExtendedSmsDeliveryReportExtension
     {
         public static SmsDeliveryReport ApplyExtendedProperties(this SmsDeliveryReport voiceDeliveryReport, SmsStatusReport report)
         {

@@ -12,18 +12,21 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-using Newtonsoft.Json;
-using System;
-
-namespace Transmitly.ChannelProvider.TwilioClient.Verify
+namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Sms
 {
-    sealed class SendCodeAttempt
+    public interface IExtendedSmsDeliveryReportProperties
     {
-        [JsonProperty("time")]
-        public DateTime? Time { get; set; }
-        [JsonProperty("channelId")]
-        public string? ChannelId { get; set; }
-        [JsonProperty("attempt_sid")]
-        public string? AttemptSid { get; set; }
+        string? AccountSid { get; set; }
+        string? ApiVersion { get; set; }
+        string? ErrorCode { get; set; }
+        string? From { get; set; }
+        string? HomeRegion { get; set; }
+        string? IdempotencyId { get; set; }
+        string? MessageSid { get; set; }
+        SmsStatus? MessageStatus { get; set; }
+        string? Signature { get; set; }
+        string? SmsSid { get; set; }
+        SmsStatus? SmsStatus { get; set; }
+        string? To { get; set; }
     }
 }

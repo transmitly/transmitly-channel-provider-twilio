@@ -20,19 +20,23 @@ namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Sms
     /// <summary>
     /// Twilio specific SMS channel properties 
     /// </summary>
-    public sealed class ExtendedSmsChannelProperties
+    public sealed class ExtendedSmsChannelProperties : ISmsExtendedChannelProperties
     {
         private readonly IExtendedProperties _extendedProperties;
         private const string ProviderKey = TwilioConstant.SmsPropertiesKey;
 
-        public ExtendedSmsChannelProperties(ISmsChannel smsChannel)
+        public ExtendedSmsChannelProperties()
+        {
+
+        }
+        private ExtendedSmsChannelProperties(ISmsChannel smsChannel)
         {
             Guard.AgainstNull(smsChannel);
             _extendedProperties = Guard.AgainstNull(smsChannel.ExtendedProperties);
 
         }
 
-        public ExtendedSmsChannelProperties(IExtendedProperties properties)
+        internal ExtendedSmsChannelProperties(IExtendedProperties properties)
         {
             _extendedProperties = properties;
         }
@@ -71,6 +75,11 @@ namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Sms
         {
             get => _extendedProperties.GetValue<string?>(ProviderKey, nameof(MessagingServiceSid));
             set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(MessagingServiceSid), value);
+        }
+
+        public ISmsExtendedChannelProperties Adapt(ISmsChannel sms)
+        {
+            return new ExtendedSmsChannelProperties(sms);
         }
     }
 }

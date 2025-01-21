@@ -21,21 +21,29 @@ using System.Threading.Tasks;
 
 namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
 {
-    public sealed class ExtendedVoiceChannelProperties : ICustomTypeDescriptor, ISerializable
+    /// <summary>
+    /// Twilio specific properties available through channel provider extensions
+    /// </summary>
+    public sealed class ExtendedVoiceChannelProperties : IExtendedVoiceChannelProperties, ICustomTypeDescriptor, ISerializable
     {
         private readonly IExtendedProperties _extendedProperties;
         private const string ProviderKey = TwilioConstant.VoicePropertiesKey;
 
-        public ExtendedVoiceChannelProperties(IVoiceChannel voiceChannel)
+        public ExtendedVoiceChannelProperties()
+        {
+
+        }
+
+        private ExtendedVoiceChannelProperties(IVoiceChannel voiceChannel)
         {
             Guard.AgainstNull(voiceChannel);
             _extendedProperties = Guard.AgainstNull(voiceChannel.ExtendedProperties);
 
         }
 
-        public ExtendedVoiceChannelProperties(IExtendedProperties properties)
+        internal ExtendedVoiceChannelProperties(IExtendedProperties properties)
         {
-            _extendedProperties = properties;
+            _extendedProperties = Guard.AgainstNull(properties);
         }
 
         /// <summary>
@@ -192,6 +200,11 @@ namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
         void ISerializable.GetObjectData(SerializationInfo info, StreamingContext context)
         {
             throw new NotImplementedException();
+        }
+
+        public IExtendedVoiceChannelProperties Adapt(IVoiceChannel sms)
+        {
+            return new ExtendedVoiceChannelProperties(sms);
         }
     }
 

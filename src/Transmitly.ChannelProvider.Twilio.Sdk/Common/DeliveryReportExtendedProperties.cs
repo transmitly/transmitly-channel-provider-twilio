@@ -21,9 +21,13 @@ namespace Transmitly
     /// <summary>
     /// Extend delivery properties for available channels.
     /// </summary>
-    public sealed class DeliveryReportExtendedProperties
+    public sealed class DeliveryReportExtendedProperties : IDeliveryReportExtendedProperties
     {
-        public DeliveryReportExtendedProperties(DeliveryReport deliveryReport)
+        public DeliveryReportExtendedProperties()
+        {
+            
+        }
+        private DeliveryReportExtendedProperties(DeliveryReport deliveryReport)
         {
             Sms = new ExtendedSmsDeliveryReportProperties(deliveryReport);
             Voice = new ExtendedVoiceDeliveryReportProperties(deliveryReport);
@@ -32,10 +36,15 @@ namespace Transmitly
         /// <summary>
         /// Gets SMS extended properties for the delivery report.
         /// </summary>
-        public ExtendedSmsDeliveryReportProperties Sms { get; }
+        public IExtendedSmsDeliveryReportProperties Sms { get; }
         /// <summary>
         /// Gets Voice extended properties for the delivery report.
         /// </summary>
-        public ExtendedVoiceDeliveryReportProperties Voice { get; }
+        public IExtendedVoiceDeliveryReportProperties Voice { get; }
+
+        public IDeliveryReportExtendedProperties Adapt(DeliveryReport report)
+        {
+            return new DeliveryReportExtendedProperties(report);
+        }
     }
 }
