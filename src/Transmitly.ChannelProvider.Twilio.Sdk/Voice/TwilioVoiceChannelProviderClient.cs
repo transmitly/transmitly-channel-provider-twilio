@@ -28,7 +28,7 @@ using Transmitly.ChannelProvider.TwilioClient.Configuration;
 
 namespace Transmitly.ChannelProvider.TwilioClient.Voice
 {
-    public sealed class TwilioVoiceChannelProviderClient(TwilioClientOptions twilioClientOptions) : ChannelProviderRestClient<IVoice>(null)
+    public sealed class TwilioVoiceChannelProviderClient(TwilioClientOptions twilioClientOptions) : ChannelProviderRestDispatcher<IVoice>(null)
     {
         private readonly TwilioClientOptions _twilioClientOptions = twilioClientOptions;
 

@@ -39,8 +39,8 @@ namespace Transmitly
             options(opts);
             builder.ChannelProvider
                 .Build(Id.ChannelProvider.Twilio(providerId), opts)
-                .AddClient<TwilioSmsChannelProviderClient, ISms>(Id.Channel.Sms())
-                .AddClient<TwilioVoiceChannelProviderClient, IVoice>(Id.Channel.Voice())
+                .AddDispatcher<TwilioSmsChannelProviderClient, ISms>(Id.Channel.Sms())
+                .AddDispatcher<TwilioVoiceChannelProviderClient, IVoice>(Id.Channel.Voice())
                 .AddDeliveryReportRequestAdaptor<TwilioSmsDeliveryStatusReportAdaptor>()
                 .AddDeliveryReportRequestAdaptor<TwilioVoiceDeliveryStatusReportAdaptor>()
                 .AddDeliveryReportExtendedProprtiesAdaptor<DeliveryReportExtendedProperties>()
