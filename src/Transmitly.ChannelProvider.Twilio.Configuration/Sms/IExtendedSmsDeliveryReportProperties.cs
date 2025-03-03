@@ -14,19 +14,19 @@
 
 namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Sms
 {
-    public interface IExtendedSmsDeliveryReportProperties
-    {
-        string? AccountSid { get; set; }
-        string? ApiVersion { get; set; }
-        string? ErrorCode { get; set; }
-        string? From { get; set; }
-        string? HomeRegion { get; set; }
-        string? IdempotencyId { get; set; }
-        string? MessageSid { get; set; }
-        SmsStatus? MessageStatus { get; set; }
-        string? Signature { get; set; }
-        string? SmsSid { get; set; }
-        SmsStatus? SmsStatus { get; set; }
-        string? To { get; set; }
-    }
+	public interface IExtendedSmsDeliveryReportProperties
+	{
+		string? AccountSid { get; set; }
+		string? ApiVersion { get; set; }
+		string? ErrorCode { get; set; }
+		string? From { get; set; }
+		string? HomeRegion { get; set; }
+		string? IdempotencyId { get; set; }
+		string? MessageSid { get; set; }
+		SmsStatus? MessageStatus { get; set; }
+		string? Signature { get; set; }
+		string? SmsSid { get; set; }
+		SmsStatus? SmsStatus { get; set; }
+		string? To { get; set; }
+	}
 }

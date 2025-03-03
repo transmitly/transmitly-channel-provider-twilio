@@ -14,48 +14,48 @@
 
 namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
 {
-    static class ExtendedVoiceDeliveryReportExtension
-    {
-        public static VoiceDeliveryReport ApplyExtendedProperties(this VoiceDeliveryReport voiceDeliveryReport, VoiceStatusReport report)
-        {
-            _ = new ExtendedVoiceDeliveryReportProperties(voiceDeliveryReport)
-            {
-                To = report.To,
-                From = report.From,
-                AccountSid = report.AccountSid,
-                ApiVersion = report.ApiVersion,
-                CallSid = report.CallSid,
-                Duration = report.Duration,
-                Timestamp = report.Timestamp,
-                AnsweredBy = report.AnsweredBy,
-                CallbackSource = report.CallbackSource,
-                IdempotencyId = report.IdempotencyId,
-                FromState = report.FromState,
-                FromZip = report.FromZip,
-                CalledState = report.CalledState,
-                CallDuration = report.CallDuration,
-                Called = report.Called,
-                CalledCity = report.CalledCity,
-                CalledCountry = report.CalledCountry,
-                CalledZip = report.CalledZip,
-                Caller = report.Caller,
-                CallerCity = report.CallerCity,
-                CallerCountry = report.CallerCountry,
-                CallerState = report.CallerState,
-                CallerZip = report.CallerZip,
-                CallStatus = report.CallStatus,
-                Direction = report.Direction,
-                FromCity = report.FromCity,
-                FromCountry = report.FromCountry,
-                SequenceNumber = report.SequenceNumber,
-                Signature = report.Signature,
-                SipResponseCode = report.SipResponseCode,
-                ToCity = report.ToCity,
-                ToCountry = report.ToCountry,
-                ToState = report.ToState,
-                ToZip = report.ToZip
-            };
-            return voiceDeliveryReport;
-        }
-    }
+	static class ExtendedVoiceDeliveryReportExtension
+	{
+		public static VoiceDeliveryReport ApplyExtendedProperties(this VoiceDeliveryReport voiceDeliveryReport, VoiceStatusReport report)
+		{
+			_ = new ExtendedVoiceDeliveryReportProperties(voiceDeliveryReport)
+			{
+				To = report.To,
+				From = report.From,
+				AccountSid = report.AccountSid,
+				ApiVersion = report.ApiVersion,
+				CallSid = report.CallSid,
+				Duration = report.Duration,
+				Timestamp = report.Timestamp,
+				AnsweredBy = report.AnsweredBy,
+				CallbackSource = report.CallbackSource,
+				IdempotencyId = report.IdempotencyId,
+				FromState = report.FromState,
+				FromZip = report.FromZip,
+				CalledState = report.CalledState,
+				CallDuration = report.CallDuration,
+				Called = report.Called,
+				CalledCity = report.CalledCity,
+				CalledCountry = report.CalledCountry,
+				CalledZip = report.CalledZip,
+				Caller = report.Caller,
+				CallerCity = report.CallerCity,
+				CallerCountry = report.CallerCountry,
+				CallerState = report.CallerState,
+				CallerZip = report.CallerZip,
+				CallStatus = report.CallStatus,
+				Direction = report.Direction,
+				FromCity = report.FromCity,
+				FromCountry = report.FromCountry,
+				SequenceNumber = report.SequenceNumber,
+				Signature = report.Signature,
+				SipResponseCode = report.SipResponseCode,
+				ToCity = report.ToCity,
+				ToCountry = report.ToCountry,
+				ToState = report.ToState,
+				ToZip = report.ToZip
+			};
+			return voiceDeliveryReport;
+		}
+	}
 }

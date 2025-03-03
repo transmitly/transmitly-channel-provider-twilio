@@ -17,26 +17,26 @@ using Transmitly.Delivery;
 
 namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
 {
-    public sealed record VoiceDeliveryReport : DeliveryReport, IVoiceDeliveryReport
-    {
-        private readonly ExtendedVoiceDeliveryReportProperties _extended;
+	public sealed record VoiceDeliveryReport : DeliveryReport, IVoiceDeliveryReport
+	{
+		private readonly ExtendedVoiceDeliveryReportProperties _extended;
 
-        public VoiceDeliveryReport(DeliveryReport original) : base(original)
-        {
-            _extended = new ExtendedVoiceDeliveryReportProperties(this);
-        }
+		public VoiceDeliveryReport(DeliveryReport original) : base(original)
+		{
+			_extended = new ExtendedVoiceDeliveryReportProperties(this);
+		}
 
-        public VoiceDeliveryReport(string EventName, string? ChannelId, string? ChannelProviderId, string? PipelineName,
-                string? ResourceId, DispatchStatus DispatchStatus, object? ChannelCommunication, IContentModel? ContentModel, Exception? Exception)
-            : base(EventName, ChannelId, ChannelProviderId, PipelineName, ResourceId, DispatchStatus, ChannelCommunication, ContentModel, Exception)
-        {
-            _extended = new ExtendedVoiceDeliveryReportProperties(this);
-        }
+		public VoiceDeliveryReport(string EventName, string? ChannelId, string? ChannelProviderId, string? PipelineName,
+				string? ResourceId, DispatchStatus DispatchStatus, object? ChannelCommunication, IContentModel? ContentModel, Exception? Exception)
+			: base(EventName, ChannelId, ChannelProviderId, PipelineName, ResourceId, DispatchStatus, ChannelCommunication, ContentModel, Exception)
+		{
+			_extended = new ExtendedVoiceDeliveryReportProperties(this);
+		}
 
-        public string? To => _extended.To;
+		public string? To => _extended.To;
 
-        public string? From => _extended.From;
+		public string? From => _extended.From;
 
-        public TimeSpan? Duration => _extended.CallDuration ?? _extended.Duration;
-    }
+		public TimeSpan? Duration => _extended.CallDuration ?? _extended.Duration;
+	}
 }

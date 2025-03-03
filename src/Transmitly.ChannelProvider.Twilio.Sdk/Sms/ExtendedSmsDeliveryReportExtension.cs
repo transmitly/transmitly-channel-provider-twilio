@@ -14,27 +14,27 @@
 
 namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Sms
 {
-    static class ExtendedSmsDeliveryReportExtension
-    {
-        public static SmsDeliveryReport ApplyExtendedProperties(this SmsDeliveryReport voiceDeliveryReport, SmsStatusReport report)
-        {
-            _ = new ExtendedSmsDeliveryReportProperties(voiceDeliveryReport)
-            {
-                To = report.To,
-                From = report.From,
-                AccountSid = report.AccountSid,
-                ApiVersion = report.ApiVersion,
-                HomeRegion = report.HomeRegion,
-                IdempotencyId = report.IdempotencyId,
-                MessageSid = report.MessageSid,
-                MessageStatus = report.MessageStatus,
-                Signature = report.Signature,
-                SmsSid = report.SmsSid,
-                SmsStatus = report.SmsStatus,
-                ErrorCode = report.ErrorCode
-            };
+	static class ExtendedSmsDeliveryReportExtension
+	{
+		public static SmsDeliveryReport ApplyExtendedProperties(this SmsDeliveryReport voiceDeliveryReport, SmsStatusReport report)
+		{
+			_ = new ExtendedSmsDeliveryReportProperties(voiceDeliveryReport)
+			{
+				To = report.To,
+				From = report.From,
+				AccountSid = report.AccountSid,
+				ApiVersion = report.ApiVersion,
+				HomeRegion = report.HomeRegion,
+				IdempotencyId = report.IdempotencyId,
+				MessageSid = report.MessageSid,
+				MessageStatus = report.MessageStatus,
+				Signature = report.Signature,
+				SmsSid = report.SmsSid,
+				SmsStatus = report.SmsStatus,
+				ErrorCode = report.ErrorCode
+			};
 
-            return voiceDeliveryReport;
-        }
-    }
+			return voiceDeliveryReport;
+		}
+	}
 }

@@ -14,11 +14,11 @@
 
 namespace Transmitly.ChannelProvider.TwilioClient.Configuration
 {
-    public static class TwilioConstant
-    {
-        public const string Id = "Twilio";
-        public const string VoicePropertiesKey = $"{Id}.Voice";
-        public const string SmsPropertiesKey = $"{Id}.Sms";
-        public const string ChannelVerifyPropertyKey = $"{Id}.Verify";
-    }
+	public static class TwilioConstant
+	{
+		public const string Id = "Twilio";
+		public const string VoicePropertiesKey = $"{Id}.Voice";
+		public const string SmsPropertiesKey = $"{Id}.Sms";
+		public const string ChannelVerifyPropertyKey = $"{Id}.Verify";
+	}
 }

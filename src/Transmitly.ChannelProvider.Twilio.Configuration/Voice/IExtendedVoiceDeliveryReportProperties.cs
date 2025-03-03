@@ -16,41 +16,41 @@ using System;
 
 namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
 {
-    public interface IExtendedVoiceDeliveryReportProperties
-    {
-        string? AccountSid { get; set; }
-        string? AnsweredBy { get; set; }
-        string? ApiVersion { get; set; }
-        string? CallbackSource { get; set; }
-        TimeSpan? CallDuration { get; set; }
-        string? Called { get; set; }
-        string? CalledCity { get; set; }
-        string? CalledCountry { get; set; }
-        string? CalledState { get; set; }
-        string? CalledZip { get; set; }
-        string? Caller { get; set; }
-        string? CallerCity { get; set; }
-        string? CallerCountry { get; set; }
-        string? CallerState { get; set; }
-        string? CallerZip { get; set; }
-        string? CallSid { get; set; }
-        CallStatus? CallStatus { get; set; }
-        Direction? Direction { get; set; }
-        TimeSpan? Duration { get; set; }
-        string? From { get; set; }
-        string? FromCity { get; set; }
-        string? FromCountry { get; set; }
-        string? FromState { get; set; }
-        string? FromZip { get; set; }
-        string? IdempotencyId { get; set; }
-        int? SequenceNumber { get; set; }
-        string? Signature { get; set; }
-        string? SipResponseCode { get; set; }
-        DateTimeOffset? Timestamp { get; set; }
-        string? To { get; set; }
-        string? ToCity { get; set; }
-        string? ToCountry { get; set; }
-        string? ToState { get; set; }
-        string? ToZip { get; set; }
-    }
+	public interface IExtendedVoiceDeliveryReportProperties
+	{
+		string? AccountSid { get; set; }
+		string? AnsweredBy { get; set; }
+		string? ApiVersion { get; set; }
+		string? CallbackSource { get; set; }
+		TimeSpan? CallDuration { get; set; }
+		string? Called { get; set; }
+		string? CalledCity { get; set; }
+		string? CalledCountry { get; set; }
+		string? CalledState { get; set; }
+		string? CalledZip { get; set; }
+		string? Caller { get; set; }
+		string? CallerCity { get; set; }
+		string? CallerCountry { get; set; }
+		string? CallerState { get; set; }
+		string? CallerZip { get; set; }
+		string? CallSid { get; set; }
+		CallStatus? CallStatus { get; set; }
+		Direction? Direction { get; set; }
+		TimeSpan? Duration { get; set; }
+		string? From { get; set; }
+		string? FromCity { get; set; }
+		string? FromCountry { get; set; }
+		string? FromState { get; set; }
+		string? FromZip { get; set; }
+		string? IdempotencyId { get; set; }
+		int? SequenceNumber { get; set; }
+		string? Signature { get; set; }
+		string? SipResponseCode { get; set; }
+		DateTimeOffset? Timestamp { get; set; }
+		string? To { get; set; }
+		string? ToCity { get; set; }
+		string? ToCountry { get; set; }
+		string? ToState { get; set; }
+		string? ToZip { get; set; }
+	}
 }

@@ -19,41 +19,41 @@ using Transmitly.ChannelProvider.TwilioClient.Configuration.Voice;
 
 namespace Transmitly.ChannelProvider.TwilioClient.Configuration
 {
-    public static class TwilioChannelProviderExtendedPropertiesBuilderExtensions
-    {
-        private static Type? _smsAdaptorType;
-        internal static ISmsExtendedChannelProperties Sms => Create<ISmsExtendedChannelProperties>(Guard.AgainstNull(_smsAdaptorType));
+	public static class TwilioChannelProviderExtendedPropertiesBuilderExtensions
+	{
+		private static Type? _smsAdaptorType;
+		internal static ISmsExtendedChannelProperties Sms => Create<ISmsExtendedChannelProperties>(Guard.AgainstNull(_smsAdaptorType));
 
-        private static Type? _voiceAdaptorType;
-        internal static IExtendedVoiceChannelProperties Voice => Create<IExtendedVoiceChannelProperties>(Guard.AgainstNull(_voiceAdaptorType));
+		private static Type? _voiceAdaptorType;
+		internal static IExtendedVoiceChannelProperties Voice => Create<IExtendedVoiceChannelProperties>(Guard.AgainstNull(_voiceAdaptorType));
 
-        private static Type? _deliveryReportAdaptorType;
-        internal static IDeliveryReportExtendedProperties DeliveryReport => Create<IDeliveryReportExtendedProperties>(Guard.AgainstNull(_deliveryReportAdaptorType));
+		private static Type? _deliveryReportAdaptorType;
+		internal static IDeliveryReportExtendedProperties DeliveryReport => Create<IDeliveryReportExtendedProperties>(Guard.AgainstNull(_deliveryReportAdaptorType));
 
-        private static T Create<T>(Type t)
-        {
-            return (T)Guard.AgainstNull(Activator.CreateInstance(t));
-        }
+		private static T Create<T>(Type t)
+		{
+			return (T)Guard.AgainstNull(Activator.CreateInstance(t));
+		}
 
-        public static ChannelProviderRegistrationBuilder AddSmsExtendedPropertiesAdaptor<T>(this ChannelProviderRegistrationBuilder builder)
-            where T : class, ISmsExtendedChannelProperties, new()
-        {
-            _smsAdaptorType = typeof(T);
-            return builder;
-        }
+		public static ChannelProviderRegistrationBuilder AddSmsExtendedPropertiesAdaptor<T>(this ChannelProviderRegistrationBuilder builder)
+			where T : class, ISmsExtendedChannelProperties, new()
+		{
+			_smsAdaptorType = typeof(T);
+			return builder;
+		}
 
-        public static ChannelProviderRegistrationBuilder AddVoiceExtendedPropertiesAdaptor<T>(this ChannelProviderRegistrationBuilder builder)
-            where T : class, IExtendedVoiceChannelProperties, new()
-        {
-            _voiceAdaptorType = typeof(T);
-            return builder;
-        }
+		public static ChannelProviderRegistrationBuilder AddVoiceExtendedPropertiesAdaptor<T>(this ChannelProviderRegistrationBuilder builder)
+			where T : class, IExtendedVoiceChannelProperties, new()
+		{
+			_voiceAdaptorType = typeof(T);
+			return builder;
+		}
 
-        public static ChannelProviderRegistrationBuilder AddDeliveryReportExtendedProprtiesAdaptor<T>(this ChannelProviderRegistrationBuilder builder)
-            where T : class, IDeliveryReportExtendedProperties, new()
-        {
-            _deliveryReportAdaptorType = typeof(T);
-            return builder;
-        }
-    }
+		public static ChannelProviderRegistrationBuilder AddDeliveryReportExtendedProprtiesAdaptor<T>(this ChannelProviderRegistrationBuilder builder)
+			where T : class, IDeliveryReportExtendedProperties, new()
+		{
+			_deliveryReportAdaptorType = typeof(T);
+			return builder;
+		}
+	}
 }

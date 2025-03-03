@@ -20,18 +20,18 @@ using System.Threading.Tasks;
 
 namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
 {
-    public interface IExtendedVoiceChannelProperties: ICustomTypeDescriptor, ISerializable
-    {
-        IExtendedVoiceChannelProperties Adapt(IVoiceChannel sms);
+	public interface IExtendedVoiceChannelProperties : ICustomTypeDescriptor, ISerializable
+	{
+		IExtendedVoiceChannelProperties Adapt(IVoiceChannel sms);
 
-        MachineDetection? MachineDetection { get; set; }
-        Func<string, IVoice, IDispatchCommunicationContext, Task>? OnStoreMessageForRetrievalAsync { get; set; }
-        string? StatusCallbackMethod { get; set; }
-        string? StatusCallbackUrl { get; set; }
-        Func<IDispatchCommunicationContext, Task<string?>>? StatusCallbackUrlResolver { get; set; }
-        int? Timeout { get; set; }
-        string? Url { get; set; }
-        HttpMethod? UrlMethod { get; set; }
-        Func<IDispatchCommunicationContext, Task<string?>>? UrlResolver { get; set; }
-    }
+		MachineDetection? MachineDetection { get; set; }
+		Func<string, IVoice, IDispatchCommunicationContext, Task>? OnStoreMessageForRetrievalAsync { get; set; }
+		string? StatusCallbackMethod { get; set; }
+		string? StatusCallbackUrl { get; set; }
+		Func<IDispatchCommunicationContext, Task<string?>>? StatusCallbackUrlResolver { get; set; }
+		int? Timeout { get; set; }
+		string? Url { get; set; }
+		HttpMethod? UrlMethod { get; set; }
+		Func<IDispatchCommunicationContext, Task<string?>>? UrlResolver { get; set; }
+	}
 }

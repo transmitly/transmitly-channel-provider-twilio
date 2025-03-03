@@ -17,26 +17,26 @@ using Transmitly.Delivery;
 
 namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Sms
 {
-    public sealed record SmsDeliveryReport : DeliveryReport, ISmsDeliveryReport
-    {
-        private readonly ExtendedSmsDeliveryReportProperties _extended;
+	public sealed record SmsDeliveryReport : DeliveryReport, ISmsDeliveryReport
+	{
+		private readonly ExtendedSmsDeliveryReportProperties _extended;
 
-        public SmsDeliveryReport(DeliveryReport original) : base(original)
-        {
-            _extended = new ExtendedSmsDeliveryReportProperties(this);
-        }
+		public SmsDeliveryReport(DeliveryReport original) : base(original)
+		{
+			_extended = new ExtendedSmsDeliveryReportProperties(this);
+		}
 
-        public SmsDeliveryReport(string EventName, string? ChannelId, string? ChannelProviderId, string? PipelineName,
-                string? ResourceId, DispatchStatus DispatchStatus, object? ChannelCommunication, IContentModel? ContentModel, Exception? Exception)
-            : base(EventName, ChannelId, ChannelProviderId, PipelineName, ResourceId, DispatchStatus, ChannelCommunication, ContentModel, Exception)
-        {
-            _extended = new ExtendedSmsDeliveryReportProperties(this);
-        }
+		public SmsDeliveryReport(string EventName, string? ChannelId, string? ChannelProviderId, string? PipelineName,
+				string? ResourceId, DispatchStatus DispatchStatus, object? ChannelCommunication, IContentModel? ContentModel, Exception? Exception)
+			: base(EventName, ChannelId, ChannelProviderId, PipelineName, ResourceId, DispatchStatus, ChannelCommunication, ContentModel, Exception)
+		{
+			_extended = new ExtendedSmsDeliveryReportProperties(this);
+		}
 
-        public string? To => _extended.To;
+		public string? To => _extended.To;
 
-        public string? From => _extended.From;
+		public string? From => _extended.From;
 
-        public int? Count => null;
-    }
+		public int? Count => null;
+	}
 }

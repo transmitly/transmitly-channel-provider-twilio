@@ -21,34 +21,34 @@ using Transmitly.ChannelProvider.TwilioClient.Voice;
 
 namespace Transmitly
 {
-    /// <summary>
-    /// Provides Twilio specific channel provider extension methods.
-    /// </summary>
-    public static class TwilioChannelProviderExtensions
-    {
-        /// <summary>
-        /// Adds channel provider support for Twilio.
-        /// </summary>
-        /// <param name="builder">Communications builder.</param>
-        /// <param name="options">Twilio options.</param>
-        /// <param name="providerId">Optional channel provider Id.</param>
-        /// <returns></returns>
-        public static CommunicationsClientBuilder AddTwilioSupport(this CommunicationsClientBuilder builder, Action<TwilioClientOptions> options, string? providerId = null)
-        {
-            var opts = new TwilioClientOptions();
-            options(opts);
-            builder.ChannelProvider
-                .Build(Id.ChannelProvider.Twilio(providerId), opts)
-                .AddDispatcher<TwilioSmsChannelProviderClient, ISms>(Id.Channel.Sms())
-                .AddDispatcher<TwilioVoiceChannelProviderClient, IVoice>(Id.Channel.Voice())
-                .AddDeliveryReportRequestAdaptor<TwilioSmsDeliveryStatusReportAdaptor>()
-                .AddDeliveryReportRequestAdaptor<TwilioVoiceDeliveryStatusReportAdaptor>()
-                .AddDeliveryReportExtendedProprtiesAdaptor<DeliveryReportExtendedProperties>()
-                .AddSmsExtendedPropertiesAdaptor<ExtendedSmsChannelProperties>()
-                .AddVoiceExtendedPropertiesAdaptor<ExtendedVoiceChannelProperties>()
-                .Register();
+	/// <summary>
+	/// Provides Twilio specific channel provider extension methods.
+	/// </summary>
+	public static class TwilioChannelProviderExtensions
+	{
+		/// <summary>
+		/// Adds channel provider support for Twilio.
+		/// </summary>
+		/// <param name="builder">Communications builder.</param>
+		/// <param name="options">Twilio options.</param>
+		/// <param name="providerId">Optional channel provider Id.</param>
+		/// <returns></returns>
+		public static CommunicationsClientBuilder AddTwilioSupport(this CommunicationsClientBuilder builder, Action<TwilioClientOptions> options, string? providerId = null)
+		{
+			var opts = new TwilioClientOptions();
+			options(opts);
+			builder.ChannelProvider
+				.Build(Id.ChannelProvider.Twilio(providerId), opts)
+				.AddDispatcher<TwilioSmsChannelProviderClient, ISms>(Id.Channel.Sms())
+				.AddDispatcher<TwilioVoiceChannelProviderClient, IVoice>(Id.Channel.Voice())
+				.AddDeliveryReportRequestAdaptor<TwilioSmsDeliveryStatusReportAdaptor>()
+				.AddDeliveryReportRequestAdaptor<TwilioVoiceDeliveryStatusReportAdaptor>()
+				.AddDeliveryReportExtendedProprtiesAdaptor<DeliveryReportExtendedProperties>()
+				.AddSmsExtendedPropertiesAdaptor<ExtendedSmsChannelProperties>()
+				.AddVoiceExtendedPropertiesAdaptor<ExtendedVoiceChannelProperties>()
+				.Register();
 
-            return builder;
-        }
-    }
+			return builder;
+		}
+	}
 }

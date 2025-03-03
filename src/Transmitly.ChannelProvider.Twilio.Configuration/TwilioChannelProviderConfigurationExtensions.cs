@@ -20,48 +20,48 @@ using Transmitly.Delivery;
 
 namespace Transmitly.ChannelProvider.TwilioClient.Configuration
 {
-    public static class TwilioChannelProviderConfigurationExtensions
-    {
-        /// <summary>
-        /// Gets the channel provider id for Twilio.
-        /// </summary>
-        /// <param name="channelProviders">Channel providers object.</param>
-        /// <param name="providerId">Optional channel provider Id.</param>
-        /// <returns>Twilio channel provider id.</returns>
-        public static string Twilio(this ChannelProviders channelProviders, string? providerId = null)
-        {
-            Guard.AgainstNull(channelProviders);
-            return channelProviders.GetId(TwilioConstant.Id, providerId);
-        }
+	public static class TwilioChannelProviderConfigurationExtensions
+	{
+		/// <summary>
+		/// Gets the channel provider id for Twilio.
+		/// </summary>
+		/// <param name="channelProviders">Channel providers object.</param>
+		/// <param name="providerId">Optional channel provider Id.</param>
+		/// <returns>Twilio channel provider id.</returns>
+		public static string Twilio(this ChannelProviders channelProviders, string? providerId = null)
+		{
+			Guard.AgainstNull(channelProviders);
+			return channelProviders.GetId(TwilioConstant.Id, providerId);
+		}
 
-        /// <summary>
-        /// Twilio specific settings for Sms channels.
-        /// </summary>
-        /// <param name="sms">Sms Channel.</param>
-        /// <returns>Twilio Sms properties.</returns>
-        public static ISmsExtendedChannelProperties Twilio(this ISmsChannel sms)
-        {
-            return TwilioChannelProviderExtendedPropertiesBuilderExtensions.Sms.Adapt(sms);
-        }
+		/// <summary>
+		/// Twilio specific settings for Sms channels.
+		/// </summary>
+		/// <param name="sms">Sms Channel.</param>
+		/// <returns>Twilio Sms properties.</returns>
+		public static ISmsExtendedChannelProperties Twilio(this ISmsChannel sms)
+		{
+			return TwilioChannelProviderExtendedPropertiesBuilderExtensions.Sms.Adapt(sms);
+		}
 
-        /// <summary>
-        /// Twilio specific settings for voice channels.
-        /// </summary>
-        /// <param name="voice">Voice Channel.</param>
-        /// <returns>Twilio voice properties.</returns>
-        public static IExtendedVoiceChannelProperties Twilio(this IVoiceChannel voice)
-        {
-            return TwilioChannelProviderExtendedPropertiesBuilderExtensions.Voice.Adapt(voice);
-        }
+		/// <summary>
+		/// Twilio specific settings for voice channels.
+		/// </summary>
+		/// <param name="voice">Voice Channel.</param>
+		/// <returns>Twilio voice properties.</returns>
+		public static IExtendedVoiceChannelProperties Twilio(this IVoiceChannel voice)
+		{
+			return TwilioChannelProviderExtendedPropertiesBuilderExtensions.Voice.Adapt(voice);
+		}
 
-        /// <summary>
-        /// Twilio specific settings for sms delivery reports.
-        /// </summary>
-        /// <param name="deliveryReport">Delivery Report.</param>
-        /// <returns>Twilio SMS delivery report properties.</returns>
-        public static IDeliveryReportExtendedProperties Twilio(this DeliveryReport deliveryReport)
-        {
-            return TwilioChannelProviderExtendedPropertiesBuilderExtensions.DeliveryReport.Adapt(deliveryReport);
-        }
-    }
+		/// <summary>
+		/// Twilio specific settings for sms delivery reports.
+		/// </summary>
+		/// <param name="deliveryReport">Delivery Report.</param>
+		/// <returns>Twilio SMS delivery report properties.</returns>
+		public static IDeliveryReportExtendedProperties Twilio(this DeliveryReport deliveryReport)
+		{
+			return TwilioChannelProviderExtendedPropertiesBuilderExtensions.DeliveryReport.Adapt(deliveryReport);
+		}
+	}
 }

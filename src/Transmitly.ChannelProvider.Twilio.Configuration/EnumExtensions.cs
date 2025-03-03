@@ -22,7 +22,7 @@ namespace Transmitly.ChannelProvider.TwilioClient
 	{
 		public static T? ToEnum<T>(string? value)
 		{
-			if(string.IsNullOrWhiteSpace(value))
+			if (string.IsNullOrWhiteSpace(value))
 				return default;
 
 			var type = typeof(T);

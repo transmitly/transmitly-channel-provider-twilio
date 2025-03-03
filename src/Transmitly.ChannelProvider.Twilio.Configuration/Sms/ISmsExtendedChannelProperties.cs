@@ -17,29 +17,29 @@ using System.Threading.Tasks;
 
 namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Sms
 {
-    /// <summary>
-    /// Twilio specific properties for the sms channel.
-    /// </summary>
-    public interface ISmsExtendedChannelProperties
-    {
-        ISmsExtendedChannelProperties Adapt(ISmsChannel sms);
+	/// <summary>
+	/// Twilio specific properties for the sms channel.
+	/// </summary>
+	public interface ISmsExtendedChannelProperties
+	{
+		ISmsExtendedChannelProperties Adapt(ISmsChannel sms);
 
-        /// <summary>
-        /// The SID of the Messaging Service you want to associate with the message.
-        /// <seealso href="https://www.twilio.com/docs/messaging/services">Documentation</seealso>
-        /// </summary>
-        string? MessagingServiceSid { get; set; }
-        /// <summary>
-        /// HTTP method to use to send status information to your application.
-        /// </summary>
-        string? StatusCallbackMethod { get; set; }
-        /// <summary>
-        /// The URL we should call to send status information to your application.
-        /// </summary>
-        string? StatusCallbackUrl { get; set; }
-        /// <summary>
-        /// A resolver that will return the URL we should call to send status information to your application.
-        /// </summary>
-        Func<IDispatchCommunicationContext, Task<string?>>? StatusCallbackUrlResolver { get; set; }
-    }
+		/// <summary>
+		/// The SID of the Messaging Service you want to associate with the message.
+		/// <seealso href="https://www.twilio.com/docs/messaging/services">Documentation</seealso>
+		/// </summary>
+		string? MessagingServiceSid { get; set; }
+		/// <summary>
+		/// HTTP method to use to send status information to your application.
+		/// </summary>
+		string? StatusCallbackMethod { get; set; }
+		/// <summary>
+		/// The URL we should call to send status information to your application.
+		/// </summary>
+		string? StatusCallbackUrl { get; set; }
+		/// <summary>
+		/// A resolver that will return the URL we should call to send status information to your application.
+		/// </summary>
+		Func<IDispatchCommunicationContext, Task<string?>>? StatusCallbackUrlResolver { get; set; }
+	}
 }

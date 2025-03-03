@@ -18,33 +18,33 @@ using Transmitly.Delivery;
 
 namespace Transmitly
 {
-    /// <summary>
-    /// Extend delivery properties for available channels.
-    /// </summary>
-    public sealed class DeliveryReportExtendedProperties : IDeliveryReportExtendedProperties
-    {
-        public DeliveryReportExtendedProperties()
-        {
-            
-        }
-        private DeliveryReportExtendedProperties(DeliveryReport deliveryReport)
-        {
-            Sms = new ExtendedSmsDeliveryReportProperties(deliveryReport);
-            Voice = new ExtendedVoiceDeliveryReportProperties(deliveryReport);
-        }
+	/// <summary>
+	/// Extend delivery properties for available channels.
+	/// </summary>
+	public sealed class DeliveryReportExtendedProperties : IDeliveryReportExtendedProperties
+	{
+		public DeliveryReportExtendedProperties()
+		{
 
-        /// <summary>
-        /// Gets SMS extended properties for the delivery report.
-        /// </summary>
-        public IExtendedSmsDeliveryReportProperties Sms { get; }
-        /// <summary>
-        /// Gets Voice extended properties for the delivery report.
-        /// </summary>
-        public IExtendedVoiceDeliveryReportProperties Voice { get; }
+		}
+		private DeliveryReportExtendedProperties(DeliveryReport deliveryReport)
+		{
+			Sms = new ExtendedSmsDeliveryReportProperties(deliveryReport);
+			Voice = new ExtendedVoiceDeliveryReportProperties(deliveryReport);
+		}
 
-        public IDeliveryReportExtendedProperties Adapt(DeliveryReport report)
-        {
-            return new DeliveryReportExtendedProperties(report);
-        }
-    }
+		/// <summary>
+		/// Gets SMS extended properties for the delivery report.
+		/// </summary>
+		public IExtendedSmsDeliveryReportProperties Sms { get; }
+		/// <summary>
+		/// Gets Voice extended properties for the delivery report.
+		/// </summary>
+		public IExtendedVoiceDeliveryReportProperties Voice { get; }
+
+		public IDeliveryReportExtendedProperties Adapt(DeliveryReport report)
+		{
+			return new DeliveryReportExtendedProperties(report);
+		}
+	}
 }

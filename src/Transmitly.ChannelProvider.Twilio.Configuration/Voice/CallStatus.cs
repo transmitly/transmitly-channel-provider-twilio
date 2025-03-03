@@ -16,27 +16,27 @@ using System.Runtime.Serialization;
 
 namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
 {
-    /// <summary>
-    /// A descriptive status for the call.
-    /// </summary>
-    public enum CallStatus
-    {
-        Unknown,
-        [EnumMember(Value = "queued")]
-        Queued,
-        [EnumMember(Value = "initiated")]
-        Initiated,
-        [EnumMember(Value = "ringing")]
-        Ringing,
-        [EnumMember(Value = "in-progress")]
-        InProgress,
-        [EnumMember(Value = "completed")]
-        Completed,
-        [EnumMember(Value = "busy")]
-        Busy,
-        [EnumMember(Value = "failed")]
-        Failed,
-        [EnumMember(Value = "no-answer")]
-        NoAnswer
-    }
+	/// <summary>
+	/// A descriptive status for the call.
+	/// </summary>
+	public enum CallStatus
+	{
+		Unknown,
+		[EnumMember(Value = "queued")]
+		Queued,
+		[EnumMember(Value = "initiated")]
+		Initiated,
+		[EnumMember(Value = "ringing")]
+		Ringing,
+		[EnumMember(Value = "in-progress")]
+		InProgress,
+		[EnumMember(Value = "completed")]
+		Completed,
+		[EnumMember(Value = "busy")]
+		Busy,
+		[EnumMember(Value = "failed")]
+		Failed,
+		[EnumMember(Value = "no-answer")]
+		NoAnswer
+	}
 }

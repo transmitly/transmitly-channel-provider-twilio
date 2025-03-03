@@ -18,11 +18,11 @@ using Transmitly.Delivery;
 
 namespace Transmitly
 {
-    public interface IDeliveryReportExtendedProperties
-    {
-        IDeliveryReportExtendedProperties Adapt(DeliveryReport report);
+	public interface IDeliveryReportExtendedProperties
+	{
+		IDeliveryReportExtendedProperties Adapt(DeliveryReport report);
 
-        IExtendedSmsDeliveryReportProperties Sms { get; }
-        IExtendedVoiceDeliveryReportProperties Voice { get; }
-    }
+		IExtendedSmsDeliveryReportProperties Sms { get; }
+		IExtendedVoiceDeliveryReportProperties Voice { get; }
+	}
 }
