@@ -26,7 +26,7 @@ using Twilio.Rest.Api.V2010.Account;
 namespace Transmitly.ChannelProvider.TwilioClient.Sms
 {
 
-	public sealed class TwilioSmsChannelProviderClient(TwilioClientOptions twilioClientOptions) : ChannelProviderRestDispatcher<ISms>(null)
+	public sealed class TwilioSmsChannelProviderDispatcher(TwilioClientOptions twilioClientOptions) : ChannelProviderRestDispatcher<ISms>(null)
 	{
 		private readonly TwilioClientOptions _twilioClientOptions = Guard.AgainstNull(twilioClientOptions);
 
