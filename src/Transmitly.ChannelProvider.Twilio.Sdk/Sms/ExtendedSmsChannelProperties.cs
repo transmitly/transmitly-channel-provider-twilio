@@ -14,13 +14,17 @@
 
 using System;
 using System.Threading.Tasks;
+using Transmitly.Channel.Configuration;
+using Transmitly.ChannelProvider.Twilio.Configuration;
+using Transmitly.ChannelProvider.Twilio.Configuration.Sms;
+using Transmitly.Util;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Sms
+namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 {
 	/// <summary>
 	/// Twilio specific SMS channel properties 
 	/// </summary>
-	public sealed class ExtendedSmsChannelProperties : ISmsExtendedChannelProperties
+	public sealed class ExtendedSmsChannelProperties : IExtendedSmsChannelProperties
 	{
 		private readonly IExtendedProperties _extendedProperties;
 		private const string ProviderKey = TwilioConstant.SmsPropertiesKey;
@@ -29,7 +33,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Sms
 		{
 
 		}
-		private ExtendedSmsChannelProperties(ISmsChannel smsChannel)
+		private ExtendedSmsChannelProperties(IChannel<ISms> smsChannel)
 		{
 			Guard.AgainstNull(smsChannel);
 			_extendedProperties = Guard.AgainstNull(smsChannel.ExtendedProperties);
@@ -77,7 +81,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Sms
 			set => _extendedProperties.AddOrUpdate(ProviderKey, nameof(MessagingServiceSid), value);
 		}
 
-		public ISmsExtendedChannelProperties Adapt(ISmsChannel sms)
+		public IExtendedSmsChannelProperties Adapt(IChannel<ISms> sms)
 		{
 			return new ExtendedSmsChannelProperties(sms);
 		}

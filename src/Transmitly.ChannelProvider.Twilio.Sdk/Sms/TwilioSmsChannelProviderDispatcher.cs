@@ -18,14 +18,13 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
-using Transmitly.ChannelProvider.TwilioClient.Configuration;
-using Transmitly.ChannelProvider.TwilioClient.Configuration.Sms;
+using Transmitly.ChannelProvider.Twilio.Configuration;
 using Transmitly.Delivery;
+using Transmitly.Util;
 using Twilio.Rest.Api.V2010.Account;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Sms
+namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 {
-
 	public sealed class TwilioSmsChannelProviderDispatcher(TwilioClientOptions twilioClientOptions) : ChannelProviderRestDispatcher<ISms>(null)
 	{
 		private readonly TwilioClientOptions _twilioClientOptions = Guard.AgainstNull(twilioClientOptions);
@@ -51,10 +50,12 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 					StatusCallback = await GetStatusCallbackUrl(smsProperties, sms, communicationContext).ConfigureAwait(false)
 				}, new TwilioHttpClient(restClient, _twilioClientOptions)).ConfigureAwait(false);
 
-				var twResult = new TwilioDispatchResult(message.Sid);
+				var isDispatched = IsDispatched(message);
+				var twResult = new TwilioDispatchResult(message.Sid, isDispatched, message.Status.ToString());
 
 				results.Add(twResult);
-				if (IsDispatched(message))
+
+				if (isDispatched)
 					Dispatched(communicationContext, sms, [twResult]);
 				else
 					Error(communicationContext, sms, [twResult]);
@@ -65,7 +66,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 
 		private static async Task<Uri?> GetStatusCallbackUrl(ExtendedSmsChannelProperties smsProperties, ISms sms, IDispatchCommunicationContext context)
 		{
-			string? url = smsProperties.StatusCallbackUrl ?? sms.DeliveryReportCallbackUrl;
+			string? url = smsProperties.StatusCallbackUrl;
 
 			var resolveUrl = smsProperties.StatusCallbackUrlResolver ?? sms.DeliveryReportCallbackUrlResolver;
 			if (resolveUrl != null)
@@ -79,13 +80,13 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 			if (string.IsNullOrWhiteSpace(url))
 				return null;
 
-			return new Uri(url).AddPipelineContext(string.Empty, context.PipelineName, context.ChannelId, context.ChannelProviderId);
+			return new Uri(url).AddPipelineContext(string.Empty, context.PipelineIntent, context.PipelineId, context.ChannelId, context.ChannelProviderId);
 		}
 
-		protected override void ConfigureHttpClient(HttpClient client)
+		protected override void ConfigureHttpClient(HttpClient httpClient)
 		{
-			RestClientConfiguration.Configure(client, _twilioClientOptions);
-			base.ConfigureHttpClient(client);
+			RestClientConfiguration.Configure(httpClient, _twilioClientOptions);
+			base.ConfigureHttpClient(httpClient);
 		}
 
 		private static bool IsDispatched(MessageResource resource)

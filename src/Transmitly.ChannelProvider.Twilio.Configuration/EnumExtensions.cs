@@ -16,7 +16,7 @@ using System;
 using System.Reflection;
 using System.Runtime.Serialization;
 
-namespace Transmitly.ChannelProvider.TwilioClient
+namespace Transmitly.ChannelProvider.Twilio.Configuration
 {
 	internal static class EnumUtil
 	{

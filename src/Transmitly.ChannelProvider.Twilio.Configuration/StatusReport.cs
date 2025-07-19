@@ -13,8 +13,9 @@
 //  limitations under the License.
 
 using Transmitly.Delivery;
+using Transmitly.Util;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Configuration
+namespace Transmitly.ChannelProvider.Twilio.Configuration
 {
 	public class StatusReport
 	{

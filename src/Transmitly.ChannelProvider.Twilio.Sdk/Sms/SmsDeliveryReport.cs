@@ -15,7 +15,7 @@
 using System;
 using Transmitly.Delivery;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Sms
+namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 {
 	public sealed record SmsDeliveryReport : DeliveryReport, ISmsDeliveryReport
 	{
@@ -26,9 +26,9 @@ namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Sms
 			_extended = new ExtendedSmsDeliveryReportProperties(this);
 		}
 
-		public SmsDeliveryReport(string EventName, string? ChannelId, string? ChannelProviderId, string? PipelineName,
-				string? ResourceId, DispatchStatus DispatchStatus, object? ChannelCommunication, IContentModel? ContentModel, Exception? Exception)
-			: base(EventName, ChannelId, ChannelProviderId, PipelineName, ResourceId, DispatchStatus, ChannelCommunication, ContentModel, Exception)
+		public SmsDeliveryReport(string EventName, string? ChannelId, string? ChannelProviderId, string? PipelineIntent, string? PipelineId,
+				string? ResourceId, CommunicationsStatus Status, object? ChannelCommunication, IContentModel? ContentModel, Exception? Exception)
+			: base(EventName, ChannelId, ChannelProviderId, PipelineIntent, PipelineId, ResourceId, Status, ChannelCommunication, ContentModel, Exception)
 		{
 			_extended = new ExtendedSmsDeliveryReportProperties(this);
 		}

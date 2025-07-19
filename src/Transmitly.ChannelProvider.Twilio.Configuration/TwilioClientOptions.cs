@@ -14,7 +14,7 @@
 
 using System.Net;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Configuration
+namespace Transmitly.ChannelProvider.Twilio.Configuration
 {
 	public sealed class TwilioClientOptions
 	{

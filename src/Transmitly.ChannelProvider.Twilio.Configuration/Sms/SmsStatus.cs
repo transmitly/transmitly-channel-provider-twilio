@@ -13,7 +13,7 @@
 //  limitations under the License.
 using System.Runtime.Serialization;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Sms
+namespace Transmitly.ChannelProvider.Twilio.Configuration.Sms
 {
 	public enum SmsStatus
 	{

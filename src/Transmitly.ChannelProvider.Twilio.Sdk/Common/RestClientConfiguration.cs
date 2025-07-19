@@ -13,9 +13,10 @@
 //  limitations under the License.
 
 using System.Net.Http;
-using Transmitly.ChannelProvider.TwilioClient.Configuration;
+using Transmitly.ChannelProvider.Twilio.Configuration;
+using Transmitly.Util;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Sms
+namespace Transmitly.ChannelProvider.Twilio.Sdk
 {
 	internal static class RestClientConfiguration
 	{

@@ -18,13 +18,17 @@ using System.Linq;
 using System.Net.Http;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using Transmitly.Channel.Configuration;
+using Transmitly.ChannelProvider.Twilio.Configuration;
+using Transmitly.ChannelProvider.Twilio.Configuration.Voice;
+using Transmitly.Util;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
+namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 {
 	/// <summary>
 	/// Twilio specific properties available through channel provider extensions
 	/// </summary>
-	public sealed class ExtendedVoiceChannelProperties : IExtendedVoiceChannelProperties, ICustomTypeDescriptor, ISerializable
+	public sealed class ExtendedVoiceChannelProperties : IExtendedVoiceChannelProperties
 	{
 		private readonly IExtendedProperties _extendedProperties;
 		private const string ProviderKey = TwilioConstant.VoicePropertiesKey;
@@ -34,7 +38,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
 
 		}
 
-		private ExtendedVoiceChannelProperties(IVoiceChannel voiceChannel)
+		private ExtendedVoiceChannelProperties(IChannel<IVoice> voiceChannel)
 		{
 			Guard.AgainstNull(voiceChannel);
 			_extendedProperties = Guard.AgainstNull(voiceChannel.ExtendedProperties);
@@ -187,7 +191,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
 
 		private static PropertyDescriptorCollection GetProperties()
 		{
-			var props = typeof(ExtendedVoiceChannelProperties).GetProperties().Where(x => x.GetCustomAttributes(typeof(IgnoreDataMemberAttribute), false).Any());
+			var props = typeof(ExtendedVoiceChannelProperties).GetProperties().Where(x => x.GetCustomAttributes(typeof(IgnoreDataMemberAttribute), false).Length != 0);
 			var descriptors = props.Select(s => (PropertyDescriptor)new ExtendedVoiceChannelPropertiesPropertyDescriptor(s.Name, [])).ToArray();
 			return new PropertyDescriptorCollection(descriptors);
 		}
@@ -202,22 +206,19 @@ namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
 			throw new NotImplementedException();
 		}
 
-		public IExtendedVoiceChannelProperties Adapt(IVoiceChannel sms)
+		public IExtendedVoiceChannelProperties Adapt(IChannel<IVoice> sms)
 		{
 			return new ExtendedVoiceChannelProperties(sms);
 		}
 	}
 
-	public class ExtendedVoiceChannelPropertiesPropertyDescriptor : PropertyDescriptor
+	/// <summary>
+	/// Property descriptor for <see cref="ExtendedVoiceChannelProperties"/>.
+	/// </summary>
+	/// <param name="name">Property name.</param>
+	/// <param name="attrs">Attributes on property.</param>
+	public class ExtendedVoiceChannelPropertiesPropertyDescriptor(string name, Attribute[] attrs) : PropertyDescriptor(name, attrs)
 	{
-
-		public ExtendedVoiceChannelPropertiesPropertyDescriptor(
-
-				 string name,
-				 Attribute[] attrs) : base(name, attrs)
-		{
-		}
-
 		public override Type ComponentType
 		{
 			get { return typeof(ExtendedVoiceChannelProperties); }
@@ -250,7 +251,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
 
 		public override object GetValue(object component)
 		{
-			return null;
+			return component;
 		}
 
 		public override void SetValue(object component, object value)

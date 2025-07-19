@@ -14,15 +14,16 @@
 
 using System;
 using System.Threading.Tasks;
+using Transmitly.Channel.Configuration;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Sms
+namespace Transmitly.ChannelProvider.Twilio.Configuration.Sms
 {
 	/// <summary>
 	/// Twilio specific properties for the sms channel.
 	/// </summary>
-	public interface ISmsExtendedChannelProperties
+	public interface IExtendedSmsChannelProperties
 	{
-		ISmsExtendedChannelProperties Adapt(ISmsChannel sms);
+		IExtendedSmsChannelProperties Adapt(IChannel<ISms> sms);
 
 		/// <summary>
 		/// The SID of the Messaging Service you want to associate with the message.

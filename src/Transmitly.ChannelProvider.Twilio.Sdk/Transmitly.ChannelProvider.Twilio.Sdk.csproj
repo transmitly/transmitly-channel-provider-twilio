@@ -41,10 +41,10 @@
 		</None>
 	</ItemGroup>
 	<ItemGroup>
-		<PackageReference Include="Transmitly" Version="0.1.0-271.a05261c" />
 		<PackageReference Include="Twilio" Version="6.0.1" />
 		<PackageReference Include="Microsoft.SourceLink.GitHub" Version="8.0.0" PrivateAssets="All" />
 		<PackageReference Include="PolySharp" Version="1.15.0" PrivateAssets="All" />
+		<PackageReference Include="Transmitly" Version="0.1.0-271.a05261c" />
 	</ItemGroup>
 	<ItemGroup Condition="'$(TargetFrameworkIdentifier)' == '.NETFramework'">
 		<Reference Include="System.Net.Http" />
@@ -65,5 +65,4 @@
   <ItemGroup>
     <ProjectReference Include="..\Transmitly.ChannelProvider.Twilio.Configuration\Transmitly.ChannelProvider.Twilio.Configuration.csproj" />
   </ItemGroup>
-
 </Project>

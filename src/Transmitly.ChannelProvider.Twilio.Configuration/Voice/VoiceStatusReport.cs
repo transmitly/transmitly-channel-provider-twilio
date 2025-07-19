@@ -14,8 +14,9 @@
 
 using System;
 using Transmitly.Delivery;
+using Transmitly.Util;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
+namespace Transmitly.ChannelProvider.Twilio.Configuration.Voice
 {
 	public sealed class VoiceStatusReport : StatusReport
 	{
