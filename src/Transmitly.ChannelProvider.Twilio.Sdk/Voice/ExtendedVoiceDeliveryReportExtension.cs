@@ -12,7 +12,9 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
+using Transmitly.ChannelProvider.Twilio.Configuration.Voice;
+
+namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 {
 	static class ExtendedVoiceDeliveryReportExtension
 	{

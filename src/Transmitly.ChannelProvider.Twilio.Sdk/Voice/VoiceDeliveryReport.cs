@@ -15,7 +15,7 @@
 using System;
 using Transmitly.Delivery;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
+namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 {
 	public sealed record VoiceDeliveryReport : DeliveryReport, IVoiceDeliveryReport
 	{
@@ -26,9 +26,9 @@ namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
 			_extended = new ExtendedVoiceDeliveryReportProperties(this);
 		}
 
-		public VoiceDeliveryReport(string EventName, string? ChannelId, string? ChannelProviderId, string? PipelineName,
-				string? ResourceId, DispatchStatus DispatchStatus, object? ChannelCommunication, IContentModel? ContentModel, Exception? Exception)
-			: base(EventName, ChannelId, ChannelProviderId, PipelineName, ResourceId, DispatchStatus, ChannelCommunication, ContentModel, Exception)
+		public VoiceDeliveryReport(string EventName, string? ChannelId, string? ChannelProviderId, string? PipelineName, string? PipelineId,
+				string? ResourceId, CommunicationsStatus Status, object? ChannelCommunication, IContentModel? ContentModel, Exception? Exception)
+			: base(EventName, ChannelId, ChannelProviderId, PipelineName, PipelineId, ResourceId, Status, ChannelCommunication, ContentModel, Exception)
 		{
 			_extended = new ExtendedVoiceDeliveryReportProperties(this);
 		}

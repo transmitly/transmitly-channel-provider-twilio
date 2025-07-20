@@ -12,11 +12,14 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-using Transmitly.ChannelProvider.TwilioClient.Configuration.Sms;
-using Transmitly.ChannelProvider.TwilioClient.Configuration.Voice;
+using Transmitly.ChannelProvider.Twilio.Configuration;
+using Transmitly.ChannelProvider.Twilio.Configuration.Sms;
+using Transmitly.ChannelProvider.Twilio.Configuration.Voice;
+using Transmitly.ChannelProvider.Twilio.Sdk.Sms;
+using Transmitly.ChannelProvider.Twilio.Sdk.Voice;
 using Transmitly.Delivery;
 
-namespace Transmitly
+namespace Transmitly.ChannelProvider.Twilio.Sdk
 {
 	/// <summary>
 	/// Extend delivery properties for available channels.

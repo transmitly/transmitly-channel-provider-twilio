@@ -14,34 +14,35 @@
 
 using System.Net.Http;
 using System.Threading.Tasks;
-using Transmitly.ChannelProvider.TwilioClient.Configuration;
-using Twilio.Clients;
+using Transmitly.ChannelProvider.Twilio.Configuration;
+using TWC = Twilio.Clients;
+using TWH = Twilio.Http;
 
-namespace Transmitly.ChannelProvider.TwilioClient
+namespace Transmitly.ChannelProvider.Twilio.Sdk
 {
-	sealed class TwilioHttpClient(HttpClient client, TwilioClientOptions twilioClientOptions) : ITwilioRestClient
+	sealed class TwilioHttpClient(HttpClient client, TwilioClientOptions twilioClientOptions) : TWC.ITwilioRestClient
 	{
 		public string AccountSid => _client.AccountSid;
 
 		public string Region => _client.Region;
 
-		private readonly TwilioRestClient _client = new(
+		private readonly TWC.TwilioRestClient _client = new(
 				twilioClientOptions.AccountSid,
 				twilioClientOptions.AuthToken,
 				twilioClientOptions.AccountSid,
 				twilioClientOptions.Region,
-				new Twilio.Http.SystemNetHttpClient(client),
+				new TWH.SystemNetHttpClient(client),
 				twilioClientOptions.Edge
 			);
 
-		public Twilio.Http.HttpClient HttpClient => _client.HttpClient;
+		public TWH.HttpClient HttpClient => _client.HttpClient;
 
-		public Twilio.Http.Response Request(Twilio.Http.Request request)
+		public TWH.Response Request(TWH.Request request)
 		{
 			return _client.Request(request);
 		}
 
-		public Task<Twilio.Http.Response> RequestAsync(Twilio.Http.Request request)
+		public Task<TWH.Response> RequestAsync(TWH.Request request)
 		{
 			return _client.RequestAsync(request);
 		}

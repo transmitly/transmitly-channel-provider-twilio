@@ -14,7 +14,7 @@
 
 using System.Runtime.Serialization;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
+namespace Transmitly.ChannelProvider.Twilio.Configuration.Voice
 {
 	/// <summary>
 	/// A descriptive status for the call.

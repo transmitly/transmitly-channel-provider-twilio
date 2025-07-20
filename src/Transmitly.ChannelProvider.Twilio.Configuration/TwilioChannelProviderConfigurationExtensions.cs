@@ -12,13 +12,13 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-using System;
-using Transmitly.ChannelProvider.Configuration;
-using Transmitly.ChannelProvider.TwilioClient.Configuration.Sms;
-using Transmitly.ChannelProvider.TwilioClient.Configuration.Voice;
+using Transmitly.Channel.Configuration;
+using Transmitly.ChannelProvider.Twilio.Configuration.Sms;
+using Transmitly.ChannelProvider.Twilio.Configuration.Voice;
 using Transmitly.Delivery;
+using Transmitly.Util;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Configuration
+namespace Transmitly.ChannelProvider.Twilio.Configuration
 {
 	public static class TwilioChannelProviderConfigurationExtensions
 	{
@@ -39,7 +39,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Configuration
 		/// </summary>
 		/// <param name="sms">Sms Channel.</param>
 		/// <returns>Twilio Sms properties.</returns>
-		public static ISmsExtendedChannelProperties Twilio(this ISmsChannel sms)
+		public static IExtendedSmsChannelProperties Twilio(this IChannel<ISms> sms)
 		{
 			return TwilioChannelProviderExtendedPropertiesBuilderExtensions.Sms.Adapt(sms);
 		}
@@ -49,7 +49,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Configuration
 		/// </summary>
 		/// <param name="voice">Voice Channel.</param>
 		/// <returns>Twilio voice properties.</returns>
-		public static IExtendedVoiceChannelProperties Twilio(this IVoiceChannel voice)
+		public static IExtendedVoiceChannelProperties Twilio(this IChannel<IVoice> voice)
 		{
 			return TwilioChannelProviderExtendedPropertiesBuilderExtensions.Voice.Adapt(voice);
 		}

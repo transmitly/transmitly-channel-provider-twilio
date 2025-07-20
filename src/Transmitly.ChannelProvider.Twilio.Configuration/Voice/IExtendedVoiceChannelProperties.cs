@@ -17,12 +17,13 @@ using System.ComponentModel;
 using System.Net.Http;
 using System.Runtime.Serialization;
 using System.Threading.Tasks;
+using Transmitly.Channel.Configuration;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
+namespace Transmitly.ChannelProvider.Twilio.Configuration.Voice
 {
 	public interface IExtendedVoiceChannelProperties : ICustomTypeDescriptor, ISerializable
 	{
-		IExtendedVoiceChannelProperties Adapt(IVoiceChannel sms);
+		IExtendedVoiceChannelProperties Adapt(IChannel<IVoice> sms);
 
 		MachineDetection? MachineDetection { get; set; }
 		Func<string, IVoice, IDispatchCommunicationContext, Task>? OnStoreMessageForRetrievalAsync { get; set; }

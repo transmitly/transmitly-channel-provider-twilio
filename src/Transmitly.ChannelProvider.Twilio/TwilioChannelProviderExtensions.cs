@@ -13,11 +13,10 @@
 //  limitations under the License.
 
 using System;
-using Transmitly.ChannelProvider.TwilioClient.Configuration;
-using Transmitly.ChannelProvider.TwilioClient.Configuration.Sms;
-using Transmitly.ChannelProvider.TwilioClient.Configuration.Voice;
-using Transmitly.ChannelProvider.TwilioClient.Sms;
-using Transmitly.ChannelProvider.TwilioClient.Voice;
+using Transmitly.ChannelProvider.Twilio.Configuration;
+using Transmitly.ChannelProvider.Twilio.Sdk;
+using Transmitly.ChannelProvider.Twilio.Sdk.Sms;
+using Transmitly.ChannelProvider.Twilio.Sdk.Voice;
 
 namespace Transmitly
 {

@@ -13,7 +13,8 @@
 //  limitations under the License.
 
 using Transmitly.Delivery;
-namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Sms
+using Transmitly.Util;
+namespace Transmitly.ChannelProvider.Twilio.Configuration.Sms
 {
 	public sealed class SmsStatusReport : StatusReport
 	{

@@ -15,12 +15,12 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Transmitly.ChannelProvider.TwilioClient.Configuration;
-using Transmitly.ChannelProvider.TwilioClient.Configuration.Voice;
+using Transmitly.ChannelProvider.Twilio.Configuration;
+using Transmitly.ChannelProvider.Twilio.Configuration.Voice;
 using Transmitly.Delivery;
 
 
-namespace Transmitly.ChannelProvider.TwilioClient.Voice
+namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 {
 	public sealed class TwilioVoiceDeliveryStatusReportAdaptor : IChannelProviderDeliveryReportRequestAdaptor
 	{
@@ -37,7 +37,8 @@ namespace Transmitly.ChannelProvider.TwilioClient.Voice
 					DeliveryReport.Event.StatusChanged(),
 					Id.Channel.Voice(),
 					TwilioConstant.Id,
-					adaptorContext.PipelineName,
+					adaptorContext.PipelineIntent,
+					adaptorContext.PipelineId,
 					voiceReport.CallSid,
 					ConvertStatus(voiceReport.CallStatus),
 					null,
@@ -48,19 +49,23 @@ namespace Transmitly.ChannelProvider.TwilioClient.Voice
 			return Task.FromResult<IReadOnlyCollection<DeliveryReport>?>(new List<DeliveryReport>() { ret }.AsReadOnly());
 		}
 
-		private static DispatchStatus ConvertStatus(CallStatus? callStatus)
+		private static CommunicationsStatus ConvertStatus(CallStatus? callStatus)
 		{
 			return callStatus switch
 			{
 				CallStatus.Unknown or CallStatus.Queued =>
-					DispatchStatus.Dispatched,
+					CommunicationsStatus.Success(TwilioConstant.Id, Enum.GetName(typeof(CallStatus), callStatus) ?? "Dispatched", (int)callStatus),
+
 				CallStatus.Initiated or CallStatus.Ringing or CallStatus.InProgress =>
-					DispatchStatus.Pending,
+					CommunicationsStatus.Info(TwilioConstant.Id, Enum.GetName(typeof(CallStatus), callStatus) ?? "Pending", (int)callStatus),
+
 				CallStatus.Completed =>
-					DispatchStatus.Delivered,
+					CommunicationsStatus.Success(TwilioConstant.Id, Enum.GetName(typeof(CallStatus), callStatus) ?? "Delivered", (int)callStatus),
+
 				CallStatus.Failed or CallStatus.Busy or CallStatus.NoAnswer =>
-					DispatchStatus.Undeliverable,
-				_ => DispatchStatus.Unknown,
+					CommunicationsStatus.ServerError(TwilioConstant.Id, Enum.GetName(typeof(CallStatus), callStatus) ?? "Failed", (int)callStatus),
+
+				_ => CommunicationsStatus.ClientError(TwilioConstant.Id, "Unknown", CommunicationsStatus.ClientErrMax),
 			};
 		}
 

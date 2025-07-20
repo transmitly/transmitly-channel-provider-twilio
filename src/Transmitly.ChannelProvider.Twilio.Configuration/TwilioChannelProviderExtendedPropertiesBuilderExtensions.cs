@@ -14,15 +14,16 @@
 
 using System;
 using Transmitly.ChannelProvider.Configuration;
-using Transmitly.ChannelProvider.TwilioClient.Configuration.Sms;
-using Transmitly.ChannelProvider.TwilioClient.Configuration.Voice;
+using Transmitly.ChannelProvider.Twilio.Configuration.Sms;
+using Transmitly.ChannelProvider.Twilio.Configuration.Voice;
+using Transmitly.Util;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Configuration
+namespace Transmitly.ChannelProvider.Twilio.Configuration
 {
 	public static class TwilioChannelProviderExtendedPropertiesBuilderExtensions
 	{
 		private static Type? _smsAdaptorType;
-		internal static ISmsExtendedChannelProperties Sms => Create<ISmsExtendedChannelProperties>(Guard.AgainstNull(_smsAdaptorType));
+		internal static IExtendedSmsChannelProperties Sms => Create<IExtendedSmsChannelProperties>(Guard.AgainstNull(_smsAdaptorType));
 
 		private static Type? _voiceAdaptorType;
 		internal static IExtendedVoiceChannelProperties Voice => Create<IExtendedVoiceChannelProperties>(Guard.AgainstNull(_voiceAdaptorType));
@@ -36,7 +37,7 @@ namespace Transmitly.ChannelProvider.TwilioClient.Configuration
 		}
 
 		public static ChannelProviderRegistrationBuilder AddSmsExtendedPropertiesAdaptor<T>(this ChannelProviderRegistrationBuilder builder)
-			where T : class, ISmsExtendedChannelProperties, new()
+			where T : class, IExtendedSmsChannelProperties, new()
 		{
 			_smsAdaptorType = typeof(T);
 			return builder;

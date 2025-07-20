@@ -15,11 +15,11 @@
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Transmitly.ChannelProvider.TwilioClient.Configuration;
-using Transmitly.ChannelProvider.TwilioClient.Configuration.Sms;
+using Transmitly.ChannelProvider.Twilio.Configuration;
+using Transmitly.ChannelProvider.Twilio.Configuration.Sms;
 using Transmitly.Delivery;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Sms
+namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 {
 	public sealed class TwilioSmsDeliveryStatusReportAdaptor : IChannelProviderDeliveryReportRequestAdaptor
 	{
@@ -35,7 +35,8 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 					DeliveryReport.Event.StatusChanged(),
 					Id.Channel.Sms(),
 					TwilioConstant.Id,
-					adaptorContext.PipelineName,
+					adaptorContext.PipelineIntent,
+					adaptorContext.PipelineId,
 					smsReport.SmsSid,
 					ConvertStatus(smsReport.SmsStatus),
 					null,
@@ -46,23 +47,26 @@ namespace Transmitly.ChannelProvider.TwilioClient.Sms
 			return Task.FromResult<IReadOnlyCollection<DeliveryReport>?>(new List<DeliveryReport>() { ret }.AsReadOnly());
 		}
 
-		private static DispatchStatus ConvertStatus(SmsStatus? messageStatus)
+		private static CommunicationsStatus ConvertStatus(SmsStatus? messageStatus)
 		{
 			return messageStatus switch
 			{
-				SmsStatus.Queued or SmsStatus.Sending or SmsStatus.Sent or SmsStatus.Receiving or SmsStatus.Accepted or SmsStatus.Scheduled =>
-					DispatchStatus.Pending,
+				SmsStatus.Queued or SmsStatus.Sending =>
+					CommunicationsStatus.Info(TwilioConstant.Id, Enum.GetName(typeof(SmsStatus), messageStatus) ?? "Pending", (int)messageStatus),
+
+				SmsStatus.Sent or SmsStatus.Receiving or SmsStatus.Accepted or SmsStatus.Scheduled =>
+					CommunicationsStatus.Success(TwilioConstant.Id, Enum.GetName(typeof(SmsStatus), messageStatus) ?? "Dispatched", (int)messageStatus),
 
 				SmsStatus.Undelivered or SmsStatus.Failed =>
-					DispatchStatus.Undeliverable,
+					CommunicationsStatus.ServerError(TwilioConstant.Id, Enum.GetName(typeof(SmsStatus), messageStatus) ?? "Failed", (int)messageStatus),
 
 				SmsStatus.Received or SmsStatus.Delivered or SmsStatus.Read or SmsStatus.PartiallyDelivered =>
-					DispatchStatus.Delivered,
+					CommunicationsStatus.Success(TwilioConstant.Id, Enum.GetName(typeof(SmsStatus), messageStatus) ?? "Delivered", (int)messageStatus),
 
 				SmsStatus.Canceled =>
-					DispatchStatus.Rejected,
+					CommunicationsStatus.ClientError(TwilioConstant.Id, Enum.GetName(typeof(SmsStatus), messageStatus) ?? "Canceled", (int)messageStatus),
 
-				_ => DispatchStatus.Unknown,
+				_ => CommunicationsStatus.ClientError(TwilioConstant.Id, "Unknown", CommunicationsStatus.ClientErrMax)
 			};
 		}
 

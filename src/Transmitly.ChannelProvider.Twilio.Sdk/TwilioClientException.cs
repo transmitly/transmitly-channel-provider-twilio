@@ -14,7 +14,7 @@
 
 using System;
 
-namespace Transmitly.ChannelProvider.TwilioClient
+namespace Transmitly.ChannelProvider.Twilio.Sdk
 {
 	public sealed class TwilioClientException : Exception
 	{

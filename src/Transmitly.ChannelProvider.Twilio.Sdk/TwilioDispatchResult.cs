@@ -13,18 +13,27 @@
 //  limitations under the License.
 
 using System;
+using Transmitly.ChannelProvider.Twilio.Configuration;
+using Transmitly.Util;
 
-namespace Transmitly.ChannelProvider.TwilioClient
+namespace Transmitly.ChannelProvider.Twilio.Sdk
 {
-	sealed class TwilioDispatchResult(string sid) : IDispatchResult
+	sealed class TwilioDispatchResult(string sid, bool isDispatched, string? status) : IDispatchResult
 	{
-		public string? ResourceId { get; } = Guard.AgainstNullOrWhiteSpace(sid);
+		public string? ResourceId => Guard.AgainstNullOrWhiteSpace(sid);
 
-		public DispatchStatus DispatchStatus => DispatchStatus.Dispatched;
+		public CommunicationsStatus Status =>
+			isDispatched
+				? CommunicationsStatus.Success(TwilioConstant.Id, status ?? "Dispatched")
+				: CommunicationsStatus.ServerError(TwilioConstant.Id, status ?? "Failed");
 
 		public string? ChannelProviderId { get; }
 
 		public string? ChannelId { get; }
+
+		public string? PipelineId { get; }
+
+		public string? PipelineIntent { get; }
 
 		public Exception? Exception { get; set; }
 	}

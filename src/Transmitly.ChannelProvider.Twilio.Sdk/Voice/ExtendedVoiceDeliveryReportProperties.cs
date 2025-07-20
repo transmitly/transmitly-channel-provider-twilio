@@ -13,9 +13,12 @@
 //  limitations under the License.
 
 using System;
+using Transmitly.ChannelProvider.Twilio.Configuration;
+using Transmitly.ChannelProvider.Twilio.Configuration.Voice;
 using Transmitly.Delivery;
+using Transmitly.Util;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Voice
+namespace Transmitly.ChannelProvider.Twilio.Sdk.Voice
 {
 	/// <summary>
 	/// Collection of Twilio specific voice delivery report properties.

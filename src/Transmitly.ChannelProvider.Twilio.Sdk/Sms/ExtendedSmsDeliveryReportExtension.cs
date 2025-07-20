@@ -12,7 +12,9 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
-namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Sms
+using Transmitly.ChannelProvider.Twilio.Configuration.Sms;
+
+namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 {
 	static class ExtendedSmsDeliveryReportExtension
 	{

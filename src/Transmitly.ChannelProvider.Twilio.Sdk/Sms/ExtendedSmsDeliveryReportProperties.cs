@@ -12,9 +12,12 @@
 //  See the License for the specific language governing permissions and
 //  limitations under the License.
 
+using Transmitly.ChannelProvider.Twilio.Configuration;
+using Transmitly.ChannelProvider.Twilio.Configuration.Sms;
 using Transmitly.Delivery;
+using Transmitly.Util;
 
-namespace Transmitly.ChannelProvider.TwilioClient.Configuration.Sms
+namespace Transmitly.ChannelProvider.Twilio.Sdk.Sms
 {
 	sealed class ExtendedSmsDeliveryReportProperties : IExtendedSmsDeliveryReportProperties
 	{
