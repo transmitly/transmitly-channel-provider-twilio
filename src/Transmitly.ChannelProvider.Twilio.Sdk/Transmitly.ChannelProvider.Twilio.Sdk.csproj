@@ -64,8 +64,4 @@
       <Pack>True</Pack>
     </None>
   </ItemGroup>
-
-  <ItemGroup>
-    <ProjectReference Include="..\Transmitly.ChannelProvider.Twilio.Configuration\Transmitly.ChannelProvider.Twilio.Configuration.csproj" />
-  </ItemGroup>
 </Project>
