@@ -1,50 +1,93 @@
-# Transmitly.ChannelProvider.Twilio
+﻿# Transmitly.ChannelProvider.Twilio
 
-A [Transmitly](https://github.com/transmitly/transmitly) channel provider that enables sending SMS and Voice communications with Twilio
+`Transmitly.ChannelProvider.Twilio` is the convenience package for using [Transmitly](https://github.com/transmitly/transmitly) with [Twilio](https://www.twilio.com/) for SMS and voice calls.
 
-### Getting started
+This is the package most applications should install. It wires together:
 
-To use the Twilio channel provider, first install the [NuGet package](https://github.com/transmitly/transmitly-channel-provider-twilio):
+- `Transmitly.ChannelProvider.Twilio.Configuration`
+- `Transmitly.ChannelProvider.Twilio.Sdk`
+
+Supported channels:
+
+- `Sms`
+- `Voice`
+
+## Install
 
 ```shell
 dotnet add package Transmitly.ChannelProvider.Twilio
 ```
 
-Then add the channel provider using `AddTwilioSupport()`:
+## Quick Start
 
 ```csharp
 using Transmitly;
-//...
-var communicationClient = new CommunicationsClientBuilder()
-.AddTwilioSupport(options =>
-{
-	options.AccountSid = "ACCOUNT_SID";
-	options.AuthToken  = "AUTH_TOKEN";
-})
-//Pipelines are the heart of Transmitly. Pipelines allow you to define your communications
-//as a domain action. This allows your domain code to stay agnostic to the details of how you
-//may send out a transactional communication.
-.AddPipeline("first-pipeline", pipeline =>
-{
-	//AddSms is a Channel that is core to the Transmitly library. 
-	//AsIdentityAddress() is also a convience method that helps us create an audience address
-	//Audience addresses can be anything, email, phone, or even a device/app Id for push notifications!
-	pipeline.AddSms(sms=>{
-		//Transmitly is a bit different. All of our communication content is configured by templates.
-		//Out of the box, we have static or string templates, file and even embedded template support.
-		//There are multiple types of templates to get you started. You can even create templates 
-		//specific to certain cultures!
-		sms.Message.AddStringTemplate("Hey, check out Transmit.ly to manage your app communications!");
-	});
-})
-.BuildClient();
 
-//Dispatch (send) the transactional sms to our friend Joe (888-555-1234) using our configured Twilio account and our "first-pipeline" pipeline.
-var result = await communicationsClient.DispatchAsync("first-pipeline", "888-555-1234".AsIdentityAddress(), new { });
+ICommunicationsClient client = new CommunicationsClientBuilder()
+	.AddTwilioSupport(options =>
+	{
+		options.AccountSid = "your-account-sid";
+		options.AuthToken = "your-auth-token";
+	})
+	.AddPipeline("sms-alert", pipeline =>
+	{
+		pipeline.AddSms("+15550001111".AsIdentityAddress(), sms =>
+		{
+			sms.Message.AddStringTemplate("There is an update on your account.");
+		});
+	})
+	.BuildClient();
+
+var result = await client.DispatchAsync(
+	"sms-alert",
+	"+15551234567".AsIdentityAddress(),
+	new { });
 ```
-* See the [Transmitly](https://github.com/transmitly/transmitly) project for more details on what a channel provider is and how it can be configured.
 
+## Configuration
+
+`AddTwilioSupport(options => ...)` accepts `TwilioClientOptions`.
+
+Common settings:
+
+- `AccountSid`: your Twilio account SID.
+- `AuthToken`: your Twilio auth token.
+- `WebProxy`: optional outbound proxy.
+- `Edge`: defaults to `ashburn`.
+- `Region`: defaults to `us1`.
+
+## Twilio-Specific Channel Features
+
+This package registers Twilio extensions for both SMS and voice channels.
+
+SMS features are available through `sms.Twilio()`:
+
+- `MessagingServiceSid`
+- `StatusCallbackUrl`
+- `StatusCallbackUrlResolver`
+- `StatusCallbackMethod`
+
+Voice features are available through `voice.Twilio()`:
+
+- `StatusCallbackUrl` and `StatusCallbackUrlResolver`
+- `Url` and `UrlResolver` for TwiML hosting
+- `Timeout`
+- `MachineDetection`
+- `OnStoreMessageForRetrievalAsync`
+
+## Voice Calls And TwiML
+
+The voice dispatcher can send inline TwiML when the generated TwiML is short enough. If the generated TwiML is too large, you must provide a `Url` or `UrlResolver` so Twilio can retrieve the call instructions.
+
+## Delivery Reports
+
+This package registers Twilio SMS and voice delivery-report request adaptors and the Twilio delivery-report extended properties adaptor, which makes `report.Twilio()` available for provider-specific webhook data.
+
+## Related Packages
+
+- [Transmitly](https://github.com/transmitly/transmitly)
+- [Transmitly.ChannelProvider.Twilio.Configuration](https://github.com/transmitly/transmitly-channel-provider-twilio-configuration)
+- [Transmitly.ChannelProvider.Twilio.Sdk](https://github.com/transmitly/transmitly-channel-provider-twilio-sdk)
 
 ---
-_Copyright © Code Impressions, LLC.  This open-source project is sponsored and maintained by Code Impressions
-and is licensed under the [Apache License, Version 2.0](http://apache.org/licenses/LICENSE-2.0.html)._
+_Copyright (c) Code Impressions, LLC. This open-source project is sponsored and maintained by Code Impressions and is licensed under the [Apache License, Version 2.0](http://apache.org/licenses/LICENSE-2.0.html)._
