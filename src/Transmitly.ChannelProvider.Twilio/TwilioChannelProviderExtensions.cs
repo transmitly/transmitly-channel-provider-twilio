@@ -1,4 +1,4 @@
-﻿// ﻿﻿Copyright (c) Code Impressions, LLC. All Rights Reserved.
+﻿// Copyright (c) Code Impressions, LLC. All Rights Reserved.
 //  
 //  Licensed under the Apache License, Version 2.0 (the "License")
 //  you may not use this file except in compliance with the License.
@@ -42,7 +42,7 @@ namespace Transmitly
 				.AddDispatcher<TwilioVoiceChannelProviderDispatcher, IVoice>(Id.Channel.Voice())
 				.AddDeliveryReportRequestAdaptor<TwilioSmsDeliveryStatusReportAdaptor>()
 				.AddDeliveryReportRequestAdaptor<TwilioVoiceDeliveryStatusReportAdaptor>()
-				.AddDeliveryReportExtendedProprtiesAdaptor<DeliveryReportExtendedProperties>()
+				.AddDeliveryReportExtendedPropertiesAdaptor<DeliveryReportExtendedProperties>()
 				.AddSmsExtendedPropertiesAdaptor<ExtendedSmsChannelProperties>()
 				.AddVoiceExtendedPropertiesAdaptor<ExtendedVoiceChannelProperties>()
 				.Register();
