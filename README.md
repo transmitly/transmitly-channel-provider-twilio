@@ -40,7 +40,7 @@ ICommunicationsClient client = new CommunicationsClientBuilder()
 
 var result = await client.DispatchAsync(
 	"sms-alert",
-	"+15551234567".AsIdentityAddress(),
+	"+15551234567",
 	new { });
 ```
 
