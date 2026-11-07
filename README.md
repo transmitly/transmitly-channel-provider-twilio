@@ -83,6 +83,11 @@ The voice dispatcher can send inline TwiML when the generated TwiML is short eno
 
 This package registers Twilio SMS and voice delivery-report request adaptors and the Twilio delivery-report extended properties adaptor, which makes `report.Twilio()` available for provider-specific webhook data.
 
+Status callbacks are checked against the `X-Twilio-Signature` header using `AuthToken`. Requests that fail the check are rejected with `403 Forbidden` by the MVC integration packages.
+
+- `ValidateDeliveryReportSignature`: defaults to `true`.
+- `DeliveryReportBaseUrl`: set this when a reverse proxy changes the URL your app sees. Use the public base URL Twilio calls, for example `https://api.example.com`. If the app uses ASP.NET Core's `ForwardedHeaders` middleware, you don't need it.
+
 ## Related Packages
 
 - [Transmitly](https://github.com/transmitly/transmitly)

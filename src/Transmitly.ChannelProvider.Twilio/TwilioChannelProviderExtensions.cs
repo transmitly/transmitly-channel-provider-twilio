@@ -14,7 +14,6 @@
 
 using System;
 using Transmitly.ChannelProvider.Twilio.Configuration;
-using Transmitly.ChannelProvider.Twilio.Sdk;
 using Transmitly.ChannelProvider.Twilio.Sdk.Sms;
 using Transmitly.ChannelProvider.Twilio.Sdk.Voice;
 
@@ -42,9 +41,6 @@ namespace Transmitly
 				.AddDispatcher<TwilioVoiceChannelProviderDispatcher, IVoice>(Id.Channel.Voice())
 				.AddDeliveryReportRequestAdaptor<TwilioSmsDeliveryStatusReportAdaptor>()
 				.AddDeliveryReportRequestAdaptor<TwilioVoiceDeliveryStatusReportAdaptor>()
-				.AddDeliveryReportExtendedPropertiesAdaptor<DeliveryReportExtendedProperties>()
-				.AddSmsExtendedPropertiesAdaptor<ExtendedSmsChannelProperties>()
-				.AddVoiceExtendedPropertiesAdaptor<ExtendedVoiceChannelProperties>()
 				.Register();
 
 			return builder;
